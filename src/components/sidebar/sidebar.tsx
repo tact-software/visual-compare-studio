@@ -9,12 +9,15 @@ import {
   List,
   ListItem,
   ListItemText,
+  IconButton,
 } from '@mui/material';
-import { FolderOpen, InsertDriveFile } from '@mui/icons-material';
+import { FolderOpen, InsertDriveFile, Close, Delete } from '@mui/icons-material';
 import { useFileStore } from '../../stores/file-store';
+import { useFileDialog } from '../../hooks/use-file-dialog';
 
 export const Sidebar: React.FC = () => {
-  const { files, selectedFiles, history } = useFileStore();
+  const { files, selectedFiles, history, removeFile, clearFiles } = useFileStore();
+  const { openFiles, openFolder } = useFileDialog();
 
   return (
     <Box sx={{ width: 256, borderRight: 1, borderColor: 'divider', p: 2 }}>
@@ -23,10 +26,22 @@ export const Sidebar: React.FC = () => {
           <CardHeader title={<Typography variant="h6">Files</Typography>} sx={{ pb: 1 }} />
           <CardContent sx={{ pt: 0 }}>
             <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
-              <Button variant="outlined" startIcon={<InsertDriveFile />} fullWidth size="small">
+              <Button
+                variant="outlined"
+                startIcon={<InsertDriveFile />}
+                fullWidth
+                size="small"
+                onClick={() => void openFiles()}
+              >
                 Open Files
               </Button>
-              <Button variant="outlined" startIcon={<FolderOpen />} fullWidth size="small">
+              <Button
+                variant="outlined"
+                startIcon={<FolderOpen />}
+                fullWidth
+                size="small"
+                onClick={() => void openFolder()}
+              >
                 Open Folder
               </Button>
             </Box>
@@ -34,7 +49,17 @@ export const Sidebar: React.FC = () => {
         </Card>
 
         <Card>
-          <CardHeader title={<Typography variant="h6">Current Files</Typography>} sx={{ pb: 1 }} />
+          <CardHeader
+            title={<Typography variant="h6">Current Files</Typography>}
+            sx={{ pb: 1 }}
+            action={
+              files.length > 0 && (
+                <IconButton size="small" onClick={clearFiles} title="Clear all files">
+                  <Delete fontSize="small" />
+                </IconButton>
+              )
+            }
+          />
           <CardContent sx={{ pt: 0 }}>
             {files.length === 0 ? (
               <Typography variant="body2" color="text.secondary">
@@ -49,10 +74,22 @@ export const Sidebar: React.FC = () => {
                       px: 1,
                       bgcolor: selectedFiles.includes(file.id) ? 'action.selected' : 'transparent',
                     }}
+                    secondaryAction={
+                      <IconButton
+                        edge="end"
+                        size="small"
+                        onClick={() => removeFile(file.id)}
+                        title="Remove file"
+                      >
+                        <Close fontSize="small" />
+                      </IconButton>
+                    }
                   >
                     <ListItemText
                       primary={file.name}
+                      secondary={`${(file.size / 1024 / 1024).toFixed(2)} MB`}
                       primaryTypographyProps={{ variant: 'body2' }}
+                      secondaryTypographyProps={{ variant: 'caption' }}
                     />
                   </ListItem>
                 ))}

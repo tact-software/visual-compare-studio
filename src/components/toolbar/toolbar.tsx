@@ -19,6 +19,7 @@ import {
 } from '@mui/icons-material';
 import { useAppStore } from '../../stores/app-store';
 import { useTheme } from '../../hooks/use-theme';
+import { AppMenu } from '../menu/app-menu';
 
 export const Toolbar: React.FC = () => {
   const { currentLayout, setLayout } = useAppStore();
@@ -57,6 +58,7 @@ export const Toolbar: React.FC = () => {
   return (
     <AppBar position="static" color="default" elevation={1}>
       <MUIToolbar variant="dense">
+        <AppMenu />
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, flex: 1 }}>
           <Typography variant="body2" color="text.secondary">
             Layout:

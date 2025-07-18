@@ -2,6 +2,8 @@ import React from 'react';
 import { Box } from '@mui/material';
 import { Sidebar } from '../sidebar/sidebar';
 import { Toolbar } from '../toolbar/toolbar';
+import { StatusBar } from '../status-bar/status-bar';
+import { DropZone } from '../common/drop-zone';
 
 interface MainLayoutProps {
   children: React.ReactNode;
@@ -9,12 +11,17 @@ interface MainLayoutProps {
 
 export const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
   return (
-    <Box sx={{ display: 'flex', height: '100vh' }}>
-      <Sidebar />
-      <Box sx={{ display: 'flex', flexDirection: 'column', flex: 1 }}>
-        <Toolbar />
-        <Box sx={{ flex: 1, overflow: 'hidden' }}>{children}</Box>
+    <DropZone>
+      <Box sx={{ display: 'flex', flexDirection: 'column', height: '100vh' }}>
+        <Box sx={{ display: 'flex', flex: 1 }}>
+          <Sidebar />
+          <Box sx={{ display: 'flex', flexDirection: 'column', flex: 1 }}>
+            <Toolbar />
+            <Box sx={{ flex: 1, overflow: 'hidden' }}>{children}</Box>
+          </Box>
+        </Box>
+        <StatusBar />
       </Box>
-    </Box>
+    </DropZone>
   );
 };

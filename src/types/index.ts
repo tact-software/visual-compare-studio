@@ -7,6 +7,8 @@ export interface ImageFile {
   height?: number;
   lastModified: number;
   type: string;
+  imageData?: string; // Base64 encoded image
+  modifiedAt?: Date;
 }
 
 export interface LayoutMode {

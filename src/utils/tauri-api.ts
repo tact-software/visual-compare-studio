@@ -7,6 +7,15 @@ export interface FileMetadata {
   name: string;
   size: number;
   lastModified: number;
+  modified: number;
+  created: number;
+  accessed: number;
+  is_file: boolean;
+  is_dir: boolean;
+  is_symlink: boolean;
+  permissions: {
+    readonly: boolean;
+  };
 }
 
 export interface ImageInfo extends FileMetadata {
