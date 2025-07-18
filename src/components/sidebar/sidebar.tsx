@@ -16,8 +16,17 @@ import { useFileStore } from '../../stores/file-store';
 import { useFileDialog } from '../../hooks/use-file-dialog';
 
 export const Sidebar: React.FC = () => {
-  const { files, selectedFiles, history, removeFile, clearFiles } = useFileStore();
+  const { files, selectedFiles, history, removeFile, clearFiles, selectFile, deselectFile } =
+    useFileStore();
   const { openFiles, openFolder } = useFileDialog();
+
+  const handleFileClick = (fileId: string) => {
+    if (selectedFiles.includes(fileId)) {
+      deselectFile(fileId);
+    } else {
+      selectFile(fileId);
+    }
+  };
 
   return (
     <Box sx={{ width: 256, borderRight: 1, borderColor: 'divider', p: 2 }}>
@@ -73,12 +82,20 @@ export const Sidebar: React.FC = () => {
                     sx={{
                       px: 1,
                       bgcolor: selectedFiles.includes(file.id) ? 'action.selected' : 'transparent',
+                      cursor: 'pointer',
+                      '&:hover': {
+                        bgcolor: 'action.hover',
+                      },
                     }}
+                    onClick={() => handleFileClick(file.id)}
                     secondaryAction={
                       <IconButton
                         edge="end"
                         size="small"
-                        onClick={() => removeFile(file.id)}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          removeFile(file.id);
+                        }}
                         title="Remove file"
                       >
                         <Close fontSize="small" />

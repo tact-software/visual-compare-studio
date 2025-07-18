@@ -36,14 +36,18 @@ export function useFileDialog() {
         const metadata = await getFileMetadata(path);
         const imageData = await readImageFile(path);
 
+        const fileName = path.split('/').pop() || 'Unknown';
+        const extension = path.split('.').pop()?.toLowerCase() || 'unknown';
+        const mimeType = `image/${extension}`;
+
         return {
           id: crypto.randomUUID(),
-          name: path.split('/').pop() || 'Unknown',
+          name: fileName,
           path,
           size: metadata.size,
           modifiedAt: new Date(metadata.modified),
           lastModified: metadata.modified,
-          type: `image/${path.split('.').pop()?.toLowerCase() || 'unknown'}`,
+          type: mimeType,
           imageData,
         };
       });

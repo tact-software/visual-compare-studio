@@ -64,9 +64,8 @@ fn read_image_file(path: String) -> Result<String, String> {
     
     // Convert to base64 for transfer to frontend
     let base64_data = base64::engine::general_purpose::STANDARD.encode(&image_data);
-    let mime_type = get_mime_type(&path);
     
-    Ok(format!("data:{};base64,{}", mime_type, base64_data))
+    Ok(base64_data)
 }
 
 #[tauri::command]
@@ -104,23 +103,6 @@ fn generate_thumbnail(path: String, _max_size: u32) -> Result<String, String> {
     read_image_file(path)
 }
 
-fn get_mime_type(path: &str) -> &'static str {
-    let extension = Path::new(path)
-        .extension()
-        .and_then(|ext| ext.to_str())
-        .unwrap_or("")
-        .to_lowercase();
-    
-    match extension.as_str() {
-        "jpg" | "jpeg" => "image/jpeg",
-        "png" => "image/png",
-        "webp" => "image/webp",
-        "avif" => "image/avif",
-        "bmp" => "image/bmp",
-        "gif" => "image/gif",
-        _ => "application/octet-stream",
-    }
-}
 
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
@@ -145,13 +127,6 @@ mod tests {
     use tempfile::NamedTempFile;
     use std::io::Write;
 
-    #[test]
-    fn test_get_mime_type() {
-        assert_eq!(get_mime_type("test.jpg"), "image/jpeg");
-        assert_eq!(get_mime_type("test.png"), "image/png");
-        assert_eq!(get_mime_type("test.webp"), "image/webp");
-        assert_eq!(get_mime_type("test.unknown"), "application/octet-stream");
-    }
 
     #[test]
     fn test_get_file_metadata() {
@@ -206,8 +181,9 @@ mod tests {
         
         assert!(result.is_ok());
         let base64_data = result.unwrap();
-        assert!(base64_data.starts_with("data:"));
-        assert!(base64_data.contains("base64,"));
+        // Now returns only base64 data, not a data URL
+        assert!(!base64_data.is_empty());
+        assert!(base64_data.chars().all(|c| c.is_ascii_alphanumeric() || c == '+' || c == '/' || c == '='));
     }
 
     #[test]
