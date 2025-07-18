@@ -1,0 +1,8 @@
+# Load mise environment
+eval "$(mise activate bash)"
+
+# Run tests and linting before commit
+bun run test:all
+
+# Run lint-staged for staged files
+bun run lint-staged

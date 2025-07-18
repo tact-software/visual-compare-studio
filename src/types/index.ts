@@ -1,0 +1,28 @@
+export interface ImageFile {
+  id: string;
+  path: string;
+  name: string;
+  size: number;
+  width?: number;
+  height?: number;
+  lastModified: number;
+  type: string;
+}
+
+export interface LayoutMode {
+  type: 'side-by-side' | 'top-bottom' | 'grid' | 'swipe';
+  gridSize?: '2x2' | '3x3';
+}
+
+export interface ViewerState {
+  zoom: number;
+  panX: number;
+  panY: number;
+}
+
+export interface AppSettings {
+  theme: 'light' | 'dark' | 'system';
+  syncZoom: boolean;
+  syncPan: boolean;
+  defaultLayout: LayoutMode;
+}

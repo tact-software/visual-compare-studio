@@ -1,0 +1,8 @@
+dist/
+src-tauri/
+node_modules/
+*.lock
+*.log
+*.md
+.gitignore
+LICENSE
