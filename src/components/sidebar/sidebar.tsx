@@ -29,8 +29,19 @@ export const Sidebar: React.FC = () => {
   };
 
   return (
-    <Box sx={{ width: 256, borderRight: 1, borderColor: 'divider', p: 2 }}>
-      <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+    <Box
+      sx={{
+        width: 256,
+        borderRight: 1,
+        borderColor: 'divider',
+        p: 2,
+        height: '100%',
+        overflow: 'hidden',
+        display: 'flex',
+        flexDirection: 'column',
+      }}
+    >
+      <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, flex: 1, overflow: 'auto' }}>
         <Card>
           <CardHeader title={<Typography variant="h6">Files</Typography>} sx={{ pb: 1 }} />
           <CardContent sx={{ pt: 0 }}>

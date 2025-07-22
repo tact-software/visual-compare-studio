@@ -12,9 +12,14 @@
   "app": {
     "windows": [
       {
-        "title": "visual-compare-studio",
-        "width": 800,
-        "height": 600
+        "title": "Visual Compare Studio",
+        "width": 1200,
+        "height": 800,
+        "minWidth": 800,
+        "minHeight": 600,
+        "resizable": true,
+        "maximizable": true,
+        "center": true
       }
     ],
     "security": {

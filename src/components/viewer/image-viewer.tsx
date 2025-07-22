@@ -25,9 +25,9 @@ export const ImageViewer: React.FC = () => {
   };
 
   return (
-    <Box sx={{ height: '100%', p: 2 }}>
+    <Box sx={{ height: '100%', width: '100%', p: 2, overflow: 'hidden' }}>
       <Fade in key={currentLayout.type} timeout={300}>
-        <Box sx={{ height: '100%' }}>{renderLayout()}</Box>
+        <Box sx={{ height: '100%', width: '100%', overflow: 'hidden' }}>{renderLayout()}</Box>
       </Fade>
     </Box>
   );

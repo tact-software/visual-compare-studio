@@ -3,11 +3,11 @@ import { Box, Slider, Typography } from '@mui/material';
 import { SingleImageViewer } from './single-image-viewer';
 import { useFileStore } from '../../stores/file-store';
 
-interface SwipeLayoutProps {
+interface TopBottomSwipeLayoutProps {
   sx?: Record<string, unknown>;
 }
 
-export const SwipeLayout: React.FC<SwipeLayoutProps> = ({ sx }) => {
+export const TopBottomSwipeLayout: React.FC<TopBottomSwipeLayoutProps> = ({ sx }) => {
   const { files, selectedFiles } = useFileStore();
   const [swipePosition, setSwipePosition] = useState(50); // パーセンテージ
   const [isDragging, setIsDragging] = useState(false);
@@ -15,8 +15,8 @@ export const SwipeLayout: React.FC<SwipeLayoutProps> = ({ sx }) => {
 
   // 選択されたファイルを取得
   const selectedFileObjects = files.filter((file) => selectedFiles.includes(file.id));
-  const leftImage = selectedFileObjects[0];
-  const rightImage = selectedFileObjects[1];
+  const topImage = selectedFileObjects[0];
+  const bottomImage = selectedFileObjects[1];
 
   // マウスドラッグでスワイプ位置を変更
   const handleMouseDown = useCallback((e: React.MouseEvent) => {
@@ -29,7 +29,7 @@ export const SwipeLayout: React.FC<SwipeLayoutProps> = ({ sx }) => {
       if (!isDragging || !containerRef.current) return;
 
       const rect = containerRef.current.getBoundingClientRect();
-      const newPosition = ((e.clientX - rect.left) / rect.width) * 100;
+      const newPosition = ((e.clientY - rect.top) / rect.height) * 100;
       setSwipePosition(Math.max(0, Math.min(100, newPosition)));
     },
     [isDragging]
@@ -49,7 +49,7 @@ export const SwipeLayout: React.FC<SwipeLayoutProps> = ({ sx }) => {
       if (!isDragging || !containerRef.current) return;
 
       const rect = containerRef.current.getBoundingClientRect();
-      const newPosition = ((e.clientX - rect.left) / rect.width) * 100;
+      const newPosition = ((e.clientY - rect.top) / rect.height) * 100;
       setSwipePosition(Math.max(0, Math.min(100, newPosition)));
     };
 
@@ -68,7 +68,7 @@ export const SwipeLayout: React.FC<SwipeLayoutProps> = ({ sx }) => {
     };
   }, [isDragging]);
 
-  if (!leftImage || !rightImage) {
+  if (!topImage || !bottomImage) {
     return (
       <Box
         sx={{
@@ -85,23 +85,14 @@ export const SwipeLayout: React.FC<SwipeLayoutProps> = ({ sx }) => {
           Select two images to compare
         </Typography>
         <Typography variant="body2" color="text.secondary">
-          Use the sidebar to select exactly two images for swipe comparison
+          Use the sidebar to select exactly two images for vertical swipe comparison
         </Typography>
       </Box>
     );
   }
 
   return (
-    <Box
-      sx={{
-        height: '100%',
-        width: '100%',
-        display: 'flex',
-        flexDirection: 'column',
-        overflow: 'hidden',
-        ...sx,
-      }}
-    >
+    <Box sx={{ height: '100%', display: 'flex', flexDirection: 'column', ...sx }}>
       {/* メインビューア */}
       <Box
         ref={containerRef}
@@ -116,19 +107,19 @@ export const SwipeLayout: React.FC<SwipeLayoutProps> = ({ sx }) => {
         onMouseUp={handleMouseUp}
         onMouseLeave={handleMouseLeave}
       >
-        {/* ベース画像（右側の画像） */}
+        {/* ベース画像（下側の画像） */}
         <Box sx={{ position: 'absolute', width: '100%', height: '100%' }}>
-          <SingleImageViewer imageFile={rightImage} viewerType="right" />
+          <SingleImageViewer imageFile={bottomImage} viewerType="bottom" />
         </Box>
 
-        {/* オーバーレイ画像（左側の画像） */}
+        {/* オーバーレイ画像（上側の画像） */}
         <Box
           sx={{
             position: 'absolute',
             left: 0,
             top: 0,
-            width: `${swipePosition}%`,
-            height: '100%',
+            width: '100%',
+            height: `${swipePosition}%`,
             overflow: 'hidden',
           }}
         >
@@ -137,11 +128,11 @@ export const SwipeLayout: React.FC<SwipeLayoutProps> = ({ sx }) => {
               position: 'absolute',
               left: 0,
               top: 0,
-              width: `${100 / (swipePosition / 100)}%`,
-              height: '100%',
+              width: '100%',
+              height: `${100 / (swipePosition / 100)}%`,
             }}
           >
-            <SingleImageViewer imageFile={leftImage} viewerType="left" />
+            <SingleImageViewer imageFile={topImage} viewerType="top" />
           </Box>
         </Box>
 
@@ -149,13 +140,13 @@ export const SwipeLayout: React.FC<SwipeLayoutProps> = ({ sx }) => {
         <Box
           sx={{
             position: 'absolute',
-            left: `${swipePosition}%`,
-            top: 0,
-            width: '2px',
-            height: '100%',
+            top: `${swipePosition}%`,
+            left: 0,
+            width: '100%',
+            height: '2px',
             backgroundColor: 'primary.main',
-            transform: 'translateX(-50%)',
-            cursor: 'ew-resize',
+            transform: 'translateY(-50%)',
+            cursor: 'ns-resize',
             '&::before': {
               content: '""',
               position: 'absolute',

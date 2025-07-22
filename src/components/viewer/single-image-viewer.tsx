@@ -84,29 +84,57 @@ export const SingleImageViewer: React.FC<SingleImageViewerProps> = ({
 
     // キャンバスサイズをコンテナに合わせる
     const rect = container.getBoundingClientRect();
-    canvas.width = rect.width;
-    canvas.height = rect.height;
+    const devicePixelRatio = window.devicePixelRatio || 1;
 
-    // 背景をクリア
-    ctx.fillStyle = '#f5f5f5';
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    // 高DPI対応とパフォーマンス最適化
+    canvas.width = rect.width * devicePixelRatio;
+    canvas.height = rect.height * devicePixelRatio;
+    canvas.style.width = `${rect.width}px`;
+    canvas.style.height = `${rect.height}px`;
+
+    ctx.scale(devicePixelRatio, devicePixelRatio);
+
+    // 背景をクリア（画像領域外は黒にして境界を明確に）
+    ctx.fillStyle = '#000000';
+    ctx.fillRect(0, 0, rect.width, rect.height);
+
+    // 固定の基準サイズを使用（ウィンドウの半分）
+    const referenceWidth = window.innerWidth / 2;
+    const referenceHeight = window.innerHeight - 100; // ツールバー分を引く
+
+    // 画像のアスペクト比を考慮した初期スケール計算
+    const imageAspect = imageElement.width / imageElement.height;
+    const referenceAspect = referenceWidth / referenceHeight;
+
+    let baseScale = 1;
+    if (viewerState.zoom === 1) {
+      // 初期表示時は画像を基準サイズに収める（すべてのビューアーで同じスケール）
+      if (imageAspect > referenceAspect) {
+        baseScale = referenceWidth / imageElement.width;
+      } else {
+        baseScale = referenceHeight / imageElement.height;
+      }
+    }
 
     // 画像のスケールを計算
-    const drawWidth = imageElement.width * viewerState.zoom;
-    const drawHeight = imageElement.height * viewerState.zoom;
+    const finalScale = baseScale * viewerState.zoom;
+    const drawWidth = imageElement.width * finalScale;
+    const drawHeight = imageElement.height * finalScale;
 
-    // 画像をキャンバスの中央に配置
-    const centerX = canvas.width / 2;
-    const centerY = canvas.height / 2;
-
-    // 変換行列を設定
+    // 変換行列を設定（左上原点）
     ctx.save();
-    ctx.translate(centerX + viewerState.panX, centerY + viewerState.panY);
-    ctx.rotate((viewerState.rotation * Math.PI) / 180);
-    ctx.scale(viewerState.flipX ? -1 : 1, viewerState.flipY ? -1 : 1);
+    ctx.translate(viewerState.panX, viewerState.panY);
 
-    // 画像を描画
-    ctx.drawImage(imageElement, -drawWidth / 2, -drawHeight / 2, drawWidth, drawHeight);
+    // 回転・反転の中心を画像の中心に設定
+    if (viewerState.rotation !== 0 || viewerState.flipX || viewerState.flipY) {
+      ctx.translate(drawWidth / 2, drawHeight / 2);
+      ctx.rotate((viewerState.rotation * Math.PI) / 180);
+      ctx.scale(viewerState.flipX ? -1 : 1, viewerState.flipY ? -1 : 1);
+      ctx.translate(-drawWidth / 2, -drawHeight / 2);
+    }
+
+    // 画像を左上原点で描画
+    ctx.drawImage(imageElement, 0, 0, drawWidth, drawHeight);
 
     ctx.restore();
   }, [imageElement, viewerState]);
@@ -161,7 +189,7 @@ export const SingleImageViewer: React.FC<SingleImageViewerProps> = ({
     setIsDragging(false);
   }, []);
 
-  // ダブルクリックでリセット
+  // ダブルクリックでリセット（画像を左上に配置）
   const handleDoubleClick = useCallback(() => {
     setViewerState({ zoom: 1, panX: 0, panY: 0 });
   }, [setViewerState]);

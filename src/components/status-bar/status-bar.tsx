@@ -23,6 +23,8 @@ export const StatusBar: React.FC = () => {
     <Box
       sx={{
         height: 32,
+        minHeight: 32,
+        flexShrink: 0,
         borderTop: 1,
         borderColor: 'divider',
         display: 'flex',

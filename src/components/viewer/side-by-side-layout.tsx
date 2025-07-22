@@ -60,9 +60,6 @@ export const SideBySideLayout: React.FC<SideBySideLayoutProps> = ({ sx }) => {
         sx={{
           width: `${splitterPosition}%`,
           height: '100%',
-          border: '1px solid',
-          borderColor: 'divider',
-          borderRadius: 1,
           overflow: 'hidden',
           mr: 0.5,
         }}
@@ -111,9 +108,6 @@ export const SideBySideLayout: React.FC<SideBySideLayoutProps> = ({ sx }) => {
         sx={{
           width: `${100 - splitterPosition}%`,
           height: '100%',
-          border: '1px solid',
-          borderColor: 'divider',
-          borderRadius: 1,
           overflow: 'hidden',
           ml: 0.5,
         }}

@@ -4,6 +4,7 @@ import { useAppStore } from '../stores/app-store';
 import { useCallback } from 'react';
 import { logger } from '../utils/logger';
 import { getFileMetadata, readImageFile } from '../utils/tauri-api-exports';
+import { getCachedImageData } from '../utils/image-cache';
 
 export function useFileDialog() {
   const { addFiles, clearFiles } = useFileStore();
@@ -34,7 +35,9 @@ export function useFileDialog() {
       // Load file metadata and content
       const filePromises = paths.map(async (path) => {
         const metadata = await getFileMetadata(path);
-        const imageData = await readImageFile(path);
+
+        // キャッシュから画像データを取得または読み込み
+        const imageData = await getCachedImageData(path, () => readImageFile(path));
 
         const fileName = path.split('/').pop() || 'Unknown';
         const extension = path.split('.').pop()?.toLowerCase() || 'unknown';

@@ -38,7 +38,15 @@ const AppContent: React.FC = () => {
   return (
     <MUIThemeProvider theme={muiTheme}>
       <CssBaseline />
-      <Box sx={{ height: '100vh', display: 'flex', flexDirection: 'column' }}>
+      <Box
+        sx={{
+          height: '100vh',
+          width: '100vw',
+          display: 'flex',
+          flexDirection: 'column',
+          overflow: 'hidden',
+        }}
+      >
         <MainLayout>
           <ImageViewer />
         </MainLayout>

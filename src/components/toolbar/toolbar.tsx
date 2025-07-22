@@ -63,11 +63,11 @@ export const Toolbar: React.FC = () => {
   };
 
   return (
-    <AppBar position="static" color="default" elevation={1}>
-      <MUIToolbar variant="dense">
+    <AppBar position="static" color="default" elevation={1} sx={{ flexShrink: 0 }}>
+      <MUIToolbar variant="dense" sx={{ minHeight: 48 }}>
         <AppMenu />
-        <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, flex: 1 }}>
-          <Typography variant="body2" color="text.secondary">
+        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, flex: 1 }}>
+          <Typography variant="caption" color="text.secondary" sx={{ minWidth: 'auto' }}>
             Layout:
           </Typography>
           <ButtonGroup size="small" variant="outlined">
@@ -76,11 +76,37 @@ export const Toolbar: React.FC = () => {
                 key={layout.type}
                 variant={currentLayout.type === layout.type ? 'contained' : 'outlined'}
                 onClick={() => setLayout({ type: layout.type })}
+                sx={{ px: 1, py: 0.5, fontSize: '0.75rem' }}
               >
                 {layout.label}
               </Button>
             ))}
           </ButtonGroup>
+
+          {/* グリッドサイズ切り替え */}
+          {currentLayout.type === 'grid' && (
+            <>
+              <Typography variant="caption" color="text.secondary" sx={{ minWidth: 'auto' }}>
+                Grid:
+              </Typography>
+              <ButtonGroup size="small" variant="outlined">
+                <Button
+                  variant={currentLayout.gridSize === '2x2' ? 'contained' : 'outlined'}
+                  onClick={() => setLayout({ type: 'grid', gridSize: '2x2' })}
+                  sx={{ px: 1, py: 0.5, fontSize: '0.75rem', minWidth: 'auto' }}
+                >
+                  2×2
+                </Button>
+                <Button
+                  variant={currentLayout.gridSize === '3x3' ? 'contained' : 'outlined'}
+                  onClick={() => setLayout({ type: 'grid', gridSize: '3x3' })}
+                  sx={{ px: 1, py: 0.5, fontSize: '0.75rem', minWidth: 'auto' }}
+                >
+                  3×3
+                </Button>
+              </ButtonGroup>
+            </>
+          )}
         </Box>
 
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
@@ -112,7 +138,7 @@ export const Toolbar: React.FC = () => {
           <Divider orientation="vertical" flexItem sx={{ mx: 1 }} />
 
           {/* 同期コントロール */}
-          <Typography variant="body2" color="text.secondary">
+          <Typography variant="caption" color="text.secondary" sx={{ minWidth: 'auto' }}>
             Sync:
           </Typography>
           <ToggleButtonGroup

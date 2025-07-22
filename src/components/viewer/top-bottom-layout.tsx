@@ -1,6 +1,7 @@
 import React, { useState, useCallback } from 'react';
-import { Box } from '@mui/material';
+import { Box, ToggleButton, ToggleButtonGroup } from '@mui/material';
 import { SingleImageViewer } from './single-image-viewer';
+import { TopBottomSwipeLayout } from './top-bottom-swipe-layout';
 import { useFileStore } from '../../stores/file-store';
 
 interface TopBottomLayoutProps {
@@ -11,6 +12,7 @@ export const TopBottomLayout: React.FC<TopBottomLayoutProps> = ({ sx }) => {
   const { files, selectedFiles } = useFileStore();
   const [splitterPosition, setSplitterPosition] = useState(50); // パーセンテージ
   const [isDragging, setIsDragging] = useState(false);
+  const [compareMode, setCompareMode] = useState<'split' | 'swipe'>('split');
 
   // 選択されたファイルを取得
   const topImage =
@@ -43,9 +45,12 @@ export const TopBottomLayout: React.FC<TopBottomLayoutProps> = ({ sx }) => {
     document.addEventListener('mouseup', handleMouseUp);
   }, []);
 
+  if (compareMode === 'swipe') {
+    return <TopBottomSwipeLayout sx={sx} />;
+  }
+
   return (
     <Box
-      data-splitter-container
       sx={{
         width: '100%',
         height: '100%',
@@ -55,74 +60,97 @@ export const TopBottomLayout: React.FC<TopBottomLayoutProps> = ({ sx }) => {
         ...sx,
       }}
     >
-      {/* 上パネル */}
-      <Box
-        sx={{
-          width: '100%',
-          height: `${splitterPosition}%`,
-          border: '1px solid',
-          borderColor: 'divider',
-          borderRadius: 1,
-          overflow: 'hidden',
-          mb: 0.5,
-        }}
-      >
-        <SingleImageViewer
-          imageFile={topImage}
-          viewerType="top"
-          sx={{ width: '100%', height: '100%' }}
-        />
+      {/* モード切り替え */}
+      <Box sx={{ p: 1, borderBottom: 1, borderColor: 'divider' }}>
+        <ToggleButtonGroup
+          value={compareMode}
+          exclusive
+          onChange={(_, newMode: string | null) =>
+            newMode && setCompareMode(newMode as 'split' | 'swipe')
+          }
+          size="small"
+        >
+          <ToggleButton value="split" sx={{ px: 2, py: 0.5 }}>
+            Split
+          </ToggleButton>
+          <ToggleButton value="swipe" sx={{ px: 2, py: 0.5 }}>
+            Swipe
+          </ToggleButton>
+        </ToggleButtonGroup>
       </Box>
 
-      {/* スプリッター */}
       <Box
+        data-splitter-container
         sx={{
-          width: '100%',
-          height: 4,
-          backgroundColor: 'divider',
-          cursor: 'row-resize',
-          position: 'relative',
+          flex: 1,
           display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          '&:hover': {
-            backgroundColor: 'primary.main',
-          },
-          ...(isDragging && {
-            backgroundColor: 'primary.main',
-          }),
+          flexDirection: 'column',
+          position: 'relative',
         }}
-        onMouseDown={handleSplitterMouseDown}
       >
-        {/* スプリッターのグリップ */}
+        {/* 上パネル */}
         <Box
           sx={{
-            width: 40,
-            height: 2,
-            backgroundColor: 'background.paper',
-            borderRadius: 1,
-            boxShadow: 1,
+            width: '100%',
+            height: `${splitterPosition}%`,
+            overflow: 'hidden',
+            mb: 0.5,
           }}
-        />
-      </Box>
+        >
+          <SingleImageViewer
+            imageFile={topImage}
+            viewerType="top"
+            sx={{ width: '100%', height: '100%' }}
+          />
+        </Box>
 
-      {/* 下パネル */}
-      <Box
-        sx={{
-          width: '100%',
-          height: `${100 - splitterPosition}%`,
-          border: '1px solid',
-          borderColor: 'divider',
-          borderRadius: 1,
-          overflow: 'hidden',
-          mt: 0.5,
-        }}
-      >
-        <SingleImageViewer
-          imageFile={bottomImage}
-          viewerType="bottom"
-          sx={{ width: '100%', height: '100%' }}
-        />
+        {/* スプリッター */}
+        <Box
+          sx={{
+            width: '100%',
+            height: 4,
+            backgroundColor: 'divider',
+            cursor: 'row-resize',
+            position: 'relative',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            '&:hover': {
+              backgroundColor: 'primary.main',
+            },
+            ...(isDragging && {
+              backgroundColor: 'primary.main',
+            }),
+          }}
+          onMouseDown={handleSplitterMouseDown}
+        >
+          {/* スプリッターのグリップ */}
+          <Box
+            sx={{
+              width: 40,
+              height: 2,
+              backgroundColor: 'background.paper',
+              borderRadius: 1,
+              boxShadow: 1,
+            }}
+          />
+        </Box>
+
+        {/* 下パネル */}
+        <Box
+          sx={{
+            width: '100%',
+            height: `${100 - splitterPosition}%`,
+            overflow: 'hidden',
+            mt: 0.5,
+          }}
+        >
+          <SingleImageViewer
+            imageFile={bottomImage}
+            viewerType="bottom"
+            sx={{ width: '100%', height: '100%' }}
+          />
+        </Box>
       </Box>
     </Box>
   );
