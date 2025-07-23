@@ -12,8 +12,8 @@ export interface ImageFile {
 }
 
 export interface LayoutMode {
-  type: 'side-by-side' | 'top-bottom' | 'grid' | 'swipe';
-  gridSize?: '2x2' | '3x3';
+  type: 'side-by-side' | 'top-bottom';
+  viewMode?: 'split' | 'swipe';
 }
 
 export interface ViewerState {

@@ -92,7 +92,7 @@ export const TopBottomSwipeLayout: React.FC<TopBottomSwipeLayoutProps> = ({ sx }
   }
 
   return (
-    <Box sx={{ height: '100%', display: 'flex', flexDirection: 'column', ...sx }}>
+    <Box sx={{ height: '100%', display: 'flex', flexDirection: 'row', ...sx }}>
       {/* メインビューア */}
       <Box
         ref={containerRef}
@@ -164,24 +164,47 @@ export const TopBottomSwipeLayout: React.FC<TopBottomSwipeLayoutProps> = ({ sx }
         />
       </Box>
 
-      {/* スライダーコントロール */}
-      <Box sx={{ p: 2, borderTop: 1, borderColor: 'divider' }}>
-        <Typography variant="body2" color="text.secondary" gutterBottom>
-          Swipe Position: {Math.round(swipePosition)}%
+      {/* スライダーコントロール（右側） */}
+      <Box
+        sx={{
+          width: 60,
+          p: 1,
+          borderLeft: 1,
+          borderColor: 'divider',
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+        }}
+      >
+        <Typography
+          variant="caption"
+          color="text.secondary"
+          sx={{
+            mb: 1,
+            fontSize: '0.7rem',
+          }}
+        >
+          {Math.round(swipePosition)}%
         </Typography>
         <Slider
-          value={swipePosition}
+          value={100 - swipePosition}
           onChange={(_, value: number | number[]) => {
-            if (Array.isArray(value)) {
-              setSwipePosition(value[0]);
-            } else {
-              setSwipePosition(value);
-            }
+            const newValue = Array.isArray(value) ? value[0] : value;
+            setSwipePosition(100 - newValue);
           }}
           min={0}
           max={100}
           step={1}
-          sx={{ mt: 1 }}
+          orientation="vertical"
+          sx={{
+            flex: 1,
+            '& .MuiSlider-rail': {
+              width: 4,
+            },
+            '& .MuiSlider-track': {
+              width: 4,
+            },
+          }}
         />
       </Box>
     </Box>

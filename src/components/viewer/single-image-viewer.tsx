@@ -98,22 +98,14 @@ export const SingleImageViewer: React.FC<SingleImageViewerProps> = ({
     ctx.fillStyle = '#000000';
     ctx.fillRect(0, 0, rect.width, rect.height);
 
-    // 固定の基準サイズを使用（ウィンドウの半分）
-    const referenceWidth = window.innerWidth / 2;
-    const referenceHeight = window.innerHeight - 100; // ツールバー分を引く
-
-    // 画像のアスペクト比を考慮した初期スケール計算
-    const imageAspect = imageElement.width / imageElement.height;
-    const referenceAspect = referenceWidth / referenceHeight;
-
+    // 実際のコンテナサイズを使用して、長辺が収まるように計算
     let baseScale = 1;
     if (viewerState.zoom === 1) {
-      // 初期表示時は画像を基準サイズに収める（すべてのビューアーで同じスケール）
-      if (imageAspect > referenceAspect) {
-        baseScale = referenceWidth / imageElement.width;
-      } else {
-        baseScale = referenceHeight / imageElement.height;
-      }
+      // 画像の長辺が表示領域に収まるようにスケールを計算
+      const scaleX = rect.width / imageElement.width;
+      const scaleY = rect.height / imageElement.height;
+      // 長辺が収まるように、小さい方のスケールを使用
+      baseScale = Math.min(scaleX, scaleY);
     }
 
     // 画像のスケールを計算
@@ -121,9 +113,13 @@ export const SingleImageViewer: React.FC<SingleImageViewerProps> = ({
     const drawWidth = imageElement.width * finalScale;
     const drawHeight = imageElement.height * finalScale;
 
-    // 変換行列を設定（左上原点）
+    // 画像をコンテナの中央に配置する計算
+    const centerX = (rect.width - drawWidth) / 2;
+    const centerY = (rect.height - drawHeight) / 2;
+
+    // 変換行列を設定（中央配置）
     ctx.save();
-    ctx.translate(viewerState.panX, viewerState.panY);
+    ctx.translate(centerX + viewerState.panX, centerY + viewerState.panY);
 
     // 回転・反転の中心を画像の中心に設定
     if (viewerState.rotation !== 0 || viewerState.flipX || viewerState.flipY) {
@@ -133,7 +129,7 @@ export const SingleImageViewer: React.FC<SingleImageViewerProps> = ({
       ctx.translate(-drawWidth / 2, -drawHeight / 2);
     }
 
-    // 画像を左上原点で描画
+    // 画像を描画
     ctx.drawImage(imageElement, 0, 0, drawWidth, drawHeight);
 
     ctx.restore();
@@ -189,7 +185,7 @@ export const SingleImageViewer: React.FC<SingleImageViewerProps> = ({
     setIsDragging(false);
   }, []);
 
-  // ダブルクリックでリセット（画像を左上に配置）
+  // ダブルクリックでリセット（画像を中央に配置）
   const handleDoubleClick = useCallback(() => {
     setViewerState({ zoom: 1, panX: 0, panY: 0 });
   }, [setViewerState]);

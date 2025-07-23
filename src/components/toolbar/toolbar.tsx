@@ -35,8 +35,6 @@ export const Toolbar: React.FC = () => {
   const layoutOptions = [
     { type: 'side-by-side', label: 'Side by Side' },
     { type: 'top-bottom', label: 'Top/Bottom' },
-    { type: 'grid', label: 'Grid' },
-    { type: 'swipe', label: 'Swipe' },
   ] as const;
 
   const handleThemeToggle = () => {
@@ -83,30 +81,30 @@ export const Toolbar: React.FC = () => {
             ))}
           </ButtonGroup>
 
-          {/* グリッドサイズ切り替え */}
-          {currentLayout.type === 'grid' && (
-            <>
-              <Typography variant="caption" color="text.secondary" sx={{ minWidth: 'auto' }}>
-                Grid:
-              </Typography>
-              <ButtonGroup size="small" variant="outlined">
-                <Button
-                  variant={currentLayout.gridSize === '2x2' ? 'contained' : 'outlined'}
-                  onClick={() => setLayout({ type: 'grid', gridSize: '2x2' })}
-                  sx={{ px: 1, py: 0.5, fontSize: '0.75rem', minWidth: 'auto' }}
-                >
-                  2×2
-                </Button>
-                <Button
-                  variant={currentLayout.gridSize === '3x3' ? 'contained' : 'outlined'}
-                  onClick={() => setLayout({ type: 'grid', gridSize: '3x3' })}
-                  sx={{ px: 1, py: 0.5, fontSize: '0.75rem', minWidth: 'auto' }}
-                >
-                  3×3
-                </Button>
-              </ButtonGroup>
-            </>
-          )}
+          {/* View Mode切り替え */}
+          <Typography variant="caption" color="text.secondary" sx={{ minWidth: 'auto' }}>
+            Mode:
+          </Typography>
+          <ButtonGroup size="small" variant="outlined">
+            <Button
+              variant={
+                currentLayout.viewMode === 'split' || !currentLayout.viewMode
+                  ? 'contained'
+                  : 'outlined'
+              }
+              onClick={() => setLayout({ ...currentLayout, viewMode: 'split' })}
+              sx={{ px: 1, py: 0.5, fontSize: '0.75rem', minWidth: 'auto' }}
+            >
+              Split
+            </Button>
+            <Button
+              variant={currentLayout.viewMode === 'swipe' ? 'contained' : 'outlined'}
+              onClick={() => setLayout({ ...currentLayout, viewMode: 'swipe' })}
+              sx={{ px: 1, py: 0.5, fontSize: '0.75rem', minWidth: 'auto' }}
+            >
+              Swipe
+            </Button>
+          </ButtonGroup>
         </Box>
 
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
