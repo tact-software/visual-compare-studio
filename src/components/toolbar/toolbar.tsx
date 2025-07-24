@@ -108,58 +108,63 @@ export const Toolbar: React.FC = () => {
         </Box>
 
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-          {/* ズームコントロール */}
-          <Tooltip title="Zoom In">
-            <IconButton
-              size="small"
-              color="primary"
-              onClick={() => syncZoomToAll(Math.min(10, leftViewer.zoom * 1.2))}
-            >
-              <ZoomIn />
-            </IconButton>
-          </Tooltip>
-          <Tooltip title="Zoom Out">
-            <IconButton
-              size="small"
-              color="primary"
-              onClick={() => syncZoomToAll(Math.max(0.1, leftViewer.zoom / 1.2))}
-            >
-              <ZoomOut />
-            </IconButton>
-          </Tooltip>
-          <Tooltip title="Reset View">
-            <IconButton size="small" color="primary" onClick={resetAllViewers}>
-              <CenterFocusStrong />
-            </IconButton>
-          </Tooltip>
-
-          <Divider orientation="vertical" flexItem sx={{ mx: 1 }} />
-
-          {/* 同期コントロール */}
-          <Typography variant="caption" color="text.secondary" sx={{ minWidth: 'auto' }}>
-            Sync:
-          </Typography>
-          <ToggleButtonGroup
-            size="small"
-            value={[...(syncZoom ? ['zoom'] : []), ...(syncPan ? ['pan'] : [])]}
-            onChange={(_, newValue: string[]) => {
-              setSyncZoom(newValue.includes('zoom'));
-              setSyncPan(newValue.includes('pan'));
-            }}
-          >
-            <ToggleButton value="zoom" aria-label="sync zoom">
-              <Tooltip title="Sync Zoom">
-                <ZoomIn fontSize="small" />
+          {/* スワイプモードでない場合のみ表示 */}
+          {currentLayout.viewMode !== 'swipe' && (
+            <>
+              {/* ズームコントロール */}
+              <Tooltip title="Zoom In">
+                <IconButton
+                  size="small"
+                  color="primary"
+                  onClick={() => syncZoomToAll(Math.min(10, leftViewer.zoom * 1.2))}
+                >
+                  <ZoomIn />
+                </IconButton>
               </Tooltip>
-            </ToggleButton>
-            <ToggleButton value="pan" aria-label="sync pan">
-              <Tooltip title="Sync Pan">
-                <PanTool fontSize="small" />
+              <Tooltip title="Zoom Out">
+                <IconButton
+                  size="small"
+                  color="primary"
+                  onClick={() => syncZoomToAll(Math.max(0.1, leftViewer.zoom / 1.2))}
+                >
+                  <ZoomOut />
+                </IconButton>
               </Tooltip>
-            </ToggleButton>
-          </ToggleButtonGroup>
+              <Tooltip title="Reset View">
+                <IconButton size="small" color="primary" onClick={resetAllViewers}>
+                  <CenterFocusStrong />
+                </IconButton>
+              </Tooltip>
 
-          <Divider orientation="vertical" flexItem sx={{ mx: 1 }} />
+              <Divider orientation="vertical" flexItem sx={{ mx: 1 }} />
+
+              {/* 同期コントロール */}
+              <Typography variant="caption" color="text.secondary" sx={{ minWidth: 'auto' }}>
+                Sync:
+              </Typography>
+              <ToggleButtonGroup
+                size="small"
+                value={[...(syncZoom ? ['zoom'] : []), ...(syncPan ? ['pan'] : [])]}
+                onChange={(_, newValue: string[]) => {
+                  setSyncZoom(newValue.includes('zoom'));
+                  setSyncPan(newValue.includes('pan'));
+                }}
+              >
+                <ToggleButton value="zoom" aria-label="sync zoom">
+                  <Tooltip title="Sync Zoom">
+                    <ZoomIn fontSize="small" />
+                  </Tooltip>
+                </ToggleButton>
+                <ToggleButton value="pan" aria-label="sync pan">
+                  <Tooltip title="Sync Pan">
+                    <PanTool fontSize="small" />
+                  </Tooltip>
+                </ToggleButton>
+              </ToggleButtonGroup>
+
+              <Divider orientation="vertical" flexItem sx={{ mx: 1 }} />
+            </>
+          )}
 
           <IconButton size="small" onClick={handleThemeToggle}>
             {getThemeIcon()}

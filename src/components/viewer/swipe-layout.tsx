@@ -1,6 +1,6 @@
 import React, { useState, useCallback, useRef, useEffect } from 'react';
 import { Box, Slider, Typography } from '@mui/material';
-import { SingleImageViewer } from './single-image-viewer';
+import { SwipeImageViewer } from './swipe-image-viewer';
 import { useFileStore } from '../../stores/file-store';
 
 interface SwipeLayoutProps {
@@ -118,7 +118,7 @@ export const SwipeLayout: React.FC<SwipeLayoutProps> = ({ sx }) => {
       >
         {/* ベース画像（右側の画像） */}
         <Box sx={{ position: 'absolute', width: '100%', height: '100%' }}>
-          <SingleImageViewer imageFile={rightImage} viewerType="right" />
+          <SwipeImageViewer imageFile={rightImage} viewerType="right" />
         </Box>
 
         {/* オーバーレイ画像（左側の画像） */}
@@ -141,7 +141,7 @@ export const SwipeLayout: React.FC<SwipeLayoutProps> = ({ sx }) => {
               height: '100%',
             }}
           >
-            <SingleImageViewer imageFile={leftImage} viewerType="left" />
+            <SwipeImageViewer imageFile={leftImage} viewerType="left" />
           </Box>
         </Box>
 

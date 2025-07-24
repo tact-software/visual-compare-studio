@@ -3,13 +3,13 @@ import { Box, Typography, CircularProgress } from '@mui/material';
 import { useViewerStore } from '../../stores/viewer-store';
 import { ImageFile } from '../../types';
 
-interface SingleImageViewerProps {
+interface SwipeImageViewerProps {
   imageFile?: ImageFile;
   viewerType: 'left' | 'right' | 'top' | 'bottom';
   sx?: Record<string, unknown>;
 }
 
-export const SingleImageViewer: React.FC<SingleImageViewerProps> = ({
+export const SwipeImageViewer: React.FC<SwipeImageViewerProps> = ({
   imageFile,
   viewerType,
   sx,
@@ -17,8 +17,6 @@ export const SingleImageViewer: React.FC<SingleImageViewerProps> = ({
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const [isLoading, setIsLoading] = useState(false);
-  const [isDragging, setIsDragging] = useState(false);
-  const [dragStart, setDragStart] = useState({ x: 0, y: 0 });
   const [imageElement, setImageElement] = useState<HTMLImageElement | null>(null);
 
   const viewerState = useViewerStore((state) => {
@@ -33,21 +31,6 @@ export const SingleImageViewer: React.FC<SingleImageViewerProps> = ({
         return state.bottomViewer;
       default:
         return state.leftViewer;
-    }
-  });
-
-  const setViewerState = useViewerStore((state) => {
-    switch (viewerType) {
-      case 'left':
-        return state.setLeftViewer;
-      case 'right':
-        return state.setRightViewer;
-      case 'top':
-        return state.setTopViewer;
-      case 'bottom':
-        return state.setBottomViewer;
-      default:
-        return state.setLeftViewer;
     }
   });
 
@@ -105,18 +88,18 @@ export const SingleImageViewer: React.FC<SingleImageViewerProps> = ({
     // 長辺が収まるように、小さい方のスケールを使用
     const baseScale = Math.min(scaleX, scaleY);
 
-    // 画像のスケールを計算（ズーム1.0 = 画像がフィットするサイズ）
-    const finalScale = baseScale * viewerState.zoom;
+    // Swipeモードでは常にズーム1.0（フィットサイズ）、パンなし
+    const finalScale = baseScale * 1.0;
     const drawWidth = imageElement.width * finalScale;
     const drawHeight = imageElement.height * finalScale;
 
-    // 画像をコンテナの中央に配置する計算
+    // 画像をコンテナの中央に配置する計算（パンなし）
     const centerX = (rect.width - drawWidth) / 2;
     const centerY = (rect.height - drawHeight) / 2;
 
     // 変換行列を設定（中央配置）
     ctx.save();
-    ctx.translate(centerX + viewerState.panX, centerY + viewerState.panY);
+    ctx.translate(centerX, centerY);
 
     // 回転・反転の中心を画像の中心に設定
     if (viewerState.rotation !== 0 || viewerState.flipX || viewerState.flipY) {
@@ -130,62 +113,24 @@ export const SingleImageViewer: React.FC<SingleImageViewerProps> = ({
     ctx.drawImage(imageElement, 0, 0, drawWidth, drawHeight);
 
     ctx.restore();
-  }, [imageElement, viewerState]);
+  }, [imageElement, viewerState.rotation, viewerState.flipX, viewerState.flipY]);
 
   // 画像が変更されたときに再描画
   useEffect(() => {
     drawImage();
   }, [drawImage]);
 
-  // ホイールイベントでズーム
-  const handleWheel = useCallback(
-    (e: React.WheelEvent) => {
-      e.preventDefault();
-      const zoomFactor = e.deltaY > 0 ? 0.9 : 1.1;
-      const newZoom = Math.max(0.1, Math.min(10, viewerState.zoom * zoomFactor));
-      setViewerState({ zoom: newZoom });
-    },
-    [viewerState.zoom, setViewerState]
-  );
+  // リサイズイベントハンドラ
+  useEffect(() => {
+    const handleResize = () => {
+      drawImage();
+    };
 
-  // マウスダウンでドラッグ開始
-  const handleMouseDown = useCallback(
-    (e: React.MouseEvent) => {
-      if (e.button === 0) {
-        // 左クリック
-        setIsDragging(true);
-        setDragStart({ x: e.clientX - viewerState.panX, y: e.clientY - viewerState.panY });
-      }
-    },
-    [viewerState.panX, viewerState.panY]
-  );
-
-  // マウス移動でパン
-  const handleMouseMove = useCallback(
-    (e: React.MouseEvent) => {
-      if (!isDragging) return;
-
-      const newPanX = e.clientX - dragStart.x;
-      const newPanY = e.clientY - dragStart.y;
-      setViewerState({ panX: newPanX, panY: newPanY });
-    },
-    [isDragging, dragStart, setViewerState]
-  );
-
-  // マウスアップでドラッグ終了
-  const handleMouseUp = useCallback(() => {
-    setIsDragging(false);
-  }, []);
-
-  // マウスリーブでドラッグ終了
-  const handleMouseLeave = useCallback(() => {
-    setIsDragging(false);
-  }, []);
-
-  // ダブルクリックでリセット（画像を中央に配置）
-  const handleDoubleClick = useCallback(() => {
-    setViewerState({ zoom: 1, panX: 0, panY: 0 });
-  }, [setViewerState]);
+    window.addEventListener('resize', handleResize);
+    return () => {
+      window.removeEventListener('resize', handleResize);
+    };
+  }, [drawImage]);
 
   return (
     <Box
@@ -195,15 +140,9 @@ export const SingleImageViewer: React.FC<SingleImageViewerProps> = ({
         height: '100%',
         position: 'relative',
         overflow: 'hidden',
-        cursor: isDragging ? 'grabbing' : 'grab',
+        cursor: 'default', // Swipeモードではドラッグカーソルは不要
         ...sx,
       }}
-      onWheel={handleWheel}
-      onMouseDown={handleMouseDown}
-      onMouseMove={handleMouseMove}
-      onMouseUp={handleMouseUp}
-      onMouseLeave={handleMouseLeave}
-      onDoubleClick={handleDoubleClick}
     >
       <canvas
         ref={canvasRef}
