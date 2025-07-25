@@ -16,3 +16,7 @@ export const getImageInfo = (path: string) => {
 export const generateThumbnail = (path: string, maxSize: number) => {
   return commands.generateThumbnail(path, maxSize);
 };
+
+export const scanFolderForImages = (folderPath: string) => {
+  return commands.scanFolderForImages(folderPath);
+};

@@ -20,17 +20,23 @@ import {
   Brightness7,
   Computer,
   PanTool,
+  Folder,
+  InsertDriveFile,
 } from '@mui/icons-material';
 import { useAppStore } from '../../stores/app-store';
 import { useTheme } from '../../hooks/use-theme';
 import { useViewerStore } from '../../stores/viewer-store';
+import { useFileStore } from '../../stores/file-store';
+import { useFolderStore } from '../../stores/folder-store';
 import { AppMenu } from '../menu/app-menu';
 
 export const Toolbar: React.FC = () => {
-  const { currentLayout, setLayout } = useAppStore();
+  const { currentLayout, setLayout, isFolderMode, setFolderMode, setLoading } = useAppStore();
   const { theme, setTheme } = useTheme();
   const { leftViewer, syncZoom, syncPan, setSyncZoom, setSyncPan, resetAllViewers, syncZoomToAll } =
     useViewerStore();
+  const { clearFiles } = useFileStore();
+  const { clearFolders } = useFolderStore();
 
   const layoutOptions = [
     { type: 'side-by-side', label: 'Side by Side' },
@@ -65,6 +71,49 @@ export const Toolbar: React.FC = () => {
       <MUIToolbar variant="dense" sx={{ minHeight: 48 }}>
         <AppMenu />
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, flex: 1 }}>
+          {/* モード切替 */}
+          <Typography variant="caption" color="text.secondary" sx={{ minWidth: 'auto' }}>
+            Mode:
+          </Typography>
+          <ToggleButtonGroup
+            size="small"
+            value={isFolderMode ? 'folder' : 'file'}
+            exclusive
+            onChange={(_, value: string) => {
+              if (value) {
+                const newMode = value === 'folder';
+
+                // モード切り替え時にリセット処理
+                if (newMode !== isFolderMode) {
+                  setLoading(false); // ローディング状態をリセット
+                  clearFiles(); // ファイルストアをクリア
+
+                  if (newMode) {
+                    // フォルダモードに切り替える場合
+                    clearFolders(); // フォルダ状態をクリア
+                  } else {
+                    // ファイルモードに切り替える場合
+                    clearFolders(); // フォルダ状態をクリア
+                  }
+                }
+
+                setFolderMode(newMode);
+              }
+            }}
+          >
+            <ToggleButton value="file" aria-label="file mode">
+              <Tooltip title="File Mode">
+                <InsertDriveFile fontSize="small" />
+              </Tooltip>
+            </ToggleButton>
+            <ToggleButton value="folder" aria-label="folder mode">
+              <Tooltip title="Folder Mode">
+                <Folder fontSize="small" />
+              </Tooltip>
+            </ToggleButton>
+          </ToggleButtonGroup>
+
+          {/* レイアウト選択（全モード共通） */}
           <Typography variant="caption" color="text.secondary" sx={{ minWidth: 'auto' }}>
             Layout:
           </Typography>
@@ -81,9 +130,9 @@ export const Toolbar: React.FC = () => {
             ))}
           </ButtonGroup>
 
-          {/* View Mode切り替え */}
+          {/* View Mode切り替え（全モード共通） */}
           <Typography variant="caption" color="text.secondary" sx={{ minWidth: 'auto' }}>
-            Mode:
+            View:
           </Typography>
           <ButtonGroup size="small" variant="outlined">
             <Button

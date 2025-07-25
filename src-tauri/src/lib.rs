@@ -103,6 +103,68 @@ fn generate_thumbnail(path: String, _max_size: u32) -> Result<String, String> {
     read_image_file(path)
 }
 
+fn is_image_file(path: &Path) -> bool {
+    if let Some(extension) = path.extension().and_then(|e| e.to_str()) {
+        matches!(extension.to_lowercase().as_str(), "jpg" | "jpeg" | "png" | "webp" | "avif" | "bmp" | "gif")
+    } else {
+        false
+    }
+}
+
+#[tauri::command]
+async fn scan_folder_for_images(folder_path: String) -> Result<Vec<String>, String> {
+    use tokio::task;
+    
+    // Run the blocking file system operations in a separate thread
+    let result = task::spawn_blocking(move || -> Result<Vec<String>, String> {
+        let folder = Path::new(&folder_path);
+        
+        if !folder.exists() {
+            return Err("Folder does not exist".to_string());
+        }
+        
+        if !folder.is_dir() {
+            return Err("Path is not a directory".to_string());
+        }
+        
+        let mut image_paths = Vec::new();
+        scan_directory_recursive(folder, &mut image_paths)?;
+        
+        // Sort paths for consistent ordering
+        image_paths.sort();
+        
+        Ok(image_paths)
+    }).await;
+    
+    match result {
+        Ok(paths) => paths,
+        Err(e) => Err(format!("Task failed: {}", e))
+    }
+}
+
+fn scan_directory_recursive(dir: &Path, image_paths: &mut Vec<String>) -> Result<(), String> {
+    let entries = fs::read_dir(dir)
+        .map_err(|e| format!("Failed to read directory {}: {}", dir.display(), e))?;
+    
+    for entry in entries {
+        let entry = entry
+            .map_err(|e| format!("Failed to read directory entry: {}", e))?;
+        
+        let path = entry.path();
+        
+        if path.is_dir() {
+            // Recursively scan subdirectories
+            scan_directory_recursive(&path, image_paths)?;
+        } else if path.is_file() && is_image_file(&path) {
+            if let Some(path_str) = path.to_str() {
+                image_paths.push(path_str.to_string());
+            }
+        }
+    }
+    
+    Ok(())
+}
+
 
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
@@ -115,7 +177,8 @@ pub fn run() {
             get_image_info,
             read_image_file,
             get_file_metadata,
-            generate_thumbnail
+            generate_thumbnail,
+            scan_folder_for_images
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

@@ -41,6 +41,10 @@ export const commands = {
   async generateThumbnail(path: string, maxSize: number): Promise<string> {
     return await invoke<string>('generate_thumbnail', { path, maxSize });
   },
+
+  async scanFolderForImages(folderPath: string): Promise<string[]> {
+    return await invoke<string[]>('scan_folder_for_images', { folderPath });
+  },
 };
 
 // Events

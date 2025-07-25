@@ -1,6 +1,7 @@
 import { open } from '@tauri-apps/plugin-dialog';
 import { useFileStore } from '../stores/file-store';
 import { useAppStore } from '../stores/app-store';
+import { useFolderStore } from '../stores/folder-store';
 import { useCallback } from 'react';
 import { logger } from '../utils/logger';
 import { getFileMetadata, readImageFile } from '../utils/tauri-api-exports';
@@ -8,7 +9,8 @@ import { getCachedImageData } from '../utils/image-cache';
 
 export function useFileDialog() {
   const { addFiles, clearFiles } = useFileStore();
-  const { setLoading } = useAppStore();
+  const { setLoading, isFolderMode } = useAppStore();
+  const { setFolder1, setFolder2, folder1Path, folder2Path } = useFolderStore();
 
   const openFiles = useCallback(async () => {
     try {
@@ -66,20 +68,43 @@ export function useFileDialog() {
     }
   }, [addFiles, setLoading]);
 
-  const openFolder = useCallback(async () => {
-    try {
-      const selected = await open({
-        directory: true,
-      });
+  const openFolder = useCallback(
+    async (targetFolder?: 'folder1' | 'folder2') => {
+      try {
+        const selected = await open({
+          directory: true,
+        });
 
-      if (!selected || typeof selected !== 'string') return;
+        if (!selected || typeof selected !== 'string') return selected;
 
-      // TODO: Implement folder scanning for images
-      logger.info(`Selected folder: ${selected}`);
-    } catch (error) {
-      logger.error('Failed to open folder', error);
-    }
-  }, []);
+        // フォルダモードの場合は、folder1かfolder2に設定
+        if (isFolderMode) {
+          if (targetFolder === 'folder1') {
+            setFolder1(selected);
+          } else if (targetFolder === 'folder2') {
+            setFolder2(selected);
+          } else {
+            // targetFolderが指定されていない場合の自動判定ロジック
+            if (!folder1Path) {
+              setFolder1(selected);
+            } else if (!folder2Path) {
+              setFolder2(selected);
+            } else {
+              // 両方埋まっている場合は、folder1を上書き
+              setFolder1(selected);
+            }
+          }
+        }
+
+        logger.info(`Opened folder: ${selected}`);
+        return selected;
+      } catch (error) {
+        logger.error('Failed to open folder', error);
+        return null;
+      }
+    },
+    [isFolderMode, folder1Path, folder2Path, setFolder1, setFolder2]
+  );
 
   const clearAllFiles = useCallback(() => {
     clearFiles();

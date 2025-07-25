@@ -19,8 +19,10 @@ export function ThemeProvider({ children }: ThemeProviderProps) {
   useEffect(() => {
     if (theme === 'system') {
       // System theme detection - will be used by MUI theme provider
-      const isDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-      console.log('System theme:', isDark ? 'dark' : 'light');
+      const _systemTheme = window.matchMedia('(prefers-color-scheme: dark)').matches
+        ? 'dark'
+        : 'light';
+      console.log('System theme:', _systemTheme);
     }
   }, [theme]);
 
