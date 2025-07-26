@@ -6,6 +6,7 @@ import { MainLayout } from './components/layout/main-layout';
 import { ImageViewer } from './components/viewer/image-viewer';
 import { ThemeProvider } from './components/common/theme-provider';
 import { useTheme } from './hooks/use-theme';
+import { useMenuEvents } from './hooks/use-menu-events';
 
 const lightTheme = createTheme({
   palette: {
@@ -34,6 +35,9 @@ const darkTheme = createTheme({
 const AppContent: React.FC = () => {
   const { theme } = useTheme();
   const muiTheme = theme === 'dark' ? darkTheme : lightTheme;
+
+  // Initialize menu event listeners
+  useMenuEvents();
 
   return (
     <MUIThemeProvider theme={muiTheme}>

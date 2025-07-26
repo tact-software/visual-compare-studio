@@ -28,7 +28,6 @@ import { useTheme } from '../../hooks/use-theme';
 import { useViewerStore } from '../../stores/viewer-store';
 import { useFileStore } from '../../stores/file-store';
 import { useFolderStore } from '../../stores/folder-store';
-import { AppMenu } from '../menu/app-menu';
 
 export const Toolbar: React.FC = () => {
   const { currentLayout, setLayout, isFolderMode, setFolderMode, setLoading } = useAppStore();
@@ -69,7 +68,6 @@ export const Toolbar: React.FC = () => {
   return (
     <AppBar position="static" color="default" elevation={1} sx={{ flexShrink: 0 }}>
       <MUIToolbar variant="dense" sx={{ minHeight: 48 }}>
-        <AppMenu />
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, flex: 1 }}>
           {/* モード切替 */}
           <Typography variant="caption" color="text.secondary" sx={{ minWidth: 'auto' }}>
