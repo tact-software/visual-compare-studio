@@ -3,6 +3,7 @@ import { Box, Slider, Typography } from '@mui/material';
 import { SwipeImageViewer } from './swipe-image-viewer';
 import { useFileStore } from '../../stores/file-store';
 import { useViewerOperations } from '../../hooks/use-viewer-operations';
+import { useBoundaryStore } from '../../stores/boundary-store';
 
 interface SwipeLayoutProps {
   sx?: Record<string, unknown>;
@@ -12,6 +13,7 @@ export const SwipeLayout: React.FC<SwipeLayoutProps> = ({ sx }) => {
   const { files, selectedFiles } = useFileStore();
   const [swipePosition, setSwipePosition] = useState(50); // パーセンテージ
   const containerRef = useRef<HTMLDivElement>(null);
+  const { boundarySettings } = useBoundaryStore();
 
   // 共通操作ハンドラーを使用
   const { createWheelHandler, createMouseDownHandler } = useViewerOperations();
@@ -126,12 +128,12 @@ export const SwipeLayout: React.FC<SwipeLayoutProps> = ({ sx }) => {
             position: 'absolute',
             left: `${swipePosition}%`,
             top: 0,
-            width: '1px',
+            width: `${boundarySettings.width}px`,
             height: '100%',
-            backgroundColor: '#666666',
+            backgroundColor: boundarySettings.color,
             transform: 'translateX(-50%)',
             pointerEvents: 'none',
-            opacity: 0.7,
+            opacity: 0.8,
             zIndex: 1,
           }}
         />
