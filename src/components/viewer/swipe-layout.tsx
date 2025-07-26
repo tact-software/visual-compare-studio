@@ -1,7 +1,8 @@
-import React, { useState, useCallback, useRef, useEffect } from 'react';
+import React, { useState, useCallback, useRef } from 'react';
 import { Box, Slider, Typography } from '@mui/material';
 import { SwipeImageViewer } from './swipe-image-viewer';
 import { useFileStore } from '../../stores/file-store';
+import { useViewerOperations } from '../../hooks/use-viewer-operations';
 
 interface SwipeLayoutProps {
   sx?: Record<string, unknown>;
@@ -10,63 +11,36 @@ interface SwipeLayoutProps {
 export const SwipeLayout: React.FC<SwipeLayoutProps> = ({ sx }) => {
   const { files, selectedFiles } = useFileStore();
   const [swipePosition, setSwipePosition] = useState(50); // パーセンテージ
-  const [isDragging, setIsDragging] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
+
+  // 共通操作ハンドラーを使用
+  const { createWheelHandler, createMouseDownHandler } = useViewerOperations();
 
   // 選択されたファイルを取得
   const selectedFileObjects = files.filter((file) => selectedFiles.includes(file.id));
   const leftImage = selectedFileObjects[0];
   const rightImage = selectedFileObjects[1];
 
-  // マウスドラッグでスワイプ位置を変更
-  const handleMouseDown = useCallback((e: React.MouseEvent) => {
-    setIsDragging(true);
-    e.preventDefault();
-  }, []);
+  // 共通の画像ビューア操作ハンドラー（境界移動は除外）
+  const handleImageWheel = createWheelHandler();
+  const handleImageMouseDown = createMouseDownHandler();
 
-  const handleMouseMove = useCallback(
-    (e: React.MouseEvent) => {
-      if (!isDragging || !containerRef.current) return;
+  // スワイプバーでの境界移動を処理（Option + スクロール）
+  const handleSwipeBarWheel = useCallback(
+    (e: React.WheelEvent) => {
+      e.preventDefault();
+      e.stopPropagation();
 
-      const rect = containerRef.current.getBoundingClientRect();
-      const newPosition = ((e.clientX - rect.left) / rect.width) * 100;
-      setSwipePosition(Math.max(0, Math.min(100, newPosition)));
+      // macOSのOptionキー（Alt）検出
+      const isOptionPressed = e.altKey || e.getModifierState?.('Alt');
+
+      if (isOptionPressed) {
+        const delta = e.deltaY > 0 ? 2 : -2;
+        setSwipePosition((prev) => Math.max(0, Math.min(100, prev + delta)));
+      }
     },
-    [isDragging]
+    [setSwipePosition]
   );
-
-  const handleMouseUp = useCallback(() => {
-    setIsDragging(false);
-  }, []);
-
-  const handleMouseLeave = useCallback(() => {
-    setIsDragging(false);
-  }, []);
-
-  // グローバルマウスイベントリスナー
-  useEffect(() => {
-    const handleGlobalMouseMove = (e: MouseEvent) => {
-      if (!isDragging || !containerRef.current) return;
-
-      const rect = containerRef.current.getBoundingClientRect();
-      const newPosition = ((e.clientX - rect.left) / rect.width) * 100;
-      setSwipePosition(Math.max(0, Math.min(100, newPosition)));
-    };
-
-    const handleGlobalMouseUp = () => {
-      setIsDragging(false);
-    };
-
-    if (isDragging) {
-      document.addEventListener('mousemove', handleGlobalMouseMove);
-      document.addEventListener('mouseup', handleGlobalMouseUp);
-    }
-
-    return () => {
-      document.removeEventListener('mousemove', handleGlobalMouseMove);
-      document.removeEventListener('mouseup', handleGlobalMouseUp);
-    };
-  }, [isDragging]);
 
   if (!leftImage || !rightImage) {
     return (
@@ -109,12 +83,13 @@ export const SwipeLayout: React.FC<SwipeLayoutProps> = ({ sx }) => {
           flex: 1,
           position: 'relative',
           overflow: 'hidden',
-          cursor: isDragging ? 'grabbing' : 'grab',
+          cursor: 'grab', // ドラッグ可能を示すカーソル
+          '&:active': {
+            cursor: 'grabbing',
+          },
         }}
-        onMouseDown={handleMouseDown}
-        onMouseMove={handleMouseMove}
-        onMouseUp={handleMouseUp}
-        onMouseLeave={handleMouseLeave}
+        onWheel={handleImageWheel}
+        onMouseDown={handleImageMouseDown}
       >
         {/* ベース画像（右側の画像） */}
         <Box sx={{ position: 'absolute', width: '100%', height: '100%' }}>
@@ -145,38 +120,38 @@ export const SwipeLayout: React.FC<SwipeLayoutProps> = ({ sx }) => {
           </Box>
         </Box>
 
-        {/* スワイプライン */}
-        <Box
-          sx={{
+        {/* 境界ライン（表示のみ、操作不可の単純なライン） */}
+        <div
+          style={{
             position: 'absolute',
             left: `${swipePosition}%`,
             top: 0,
-            width: '2px',
+            width: '1px',
             height: '100%',
-            backgroundColor: 'primary.main',
+            backgroundColor: '#666666',
             transform: 'translateX(-50%)',
-            cursor: 'ew-resize',
-            '&::before': {
-              content: '""',
-              position: 'absolute',
-              top: '50%',
-              left: '50%',
-              transform: 'translate(-50%, -50%)',
-              width: '20px',
-              height: '20px',
-              borderRadius: '50%',
-              backgroundColor: 'primary.main',
-              border: '2px solid white',
-              boxShadow: '0 2px 4px rgba(0,0,0,0.3)',
-            },
+            pointerEvents: 'none',
+            opacity: 0.7,
+            zIndex: 1,
           }}
         />
       </Box>
 
-      {/* スライダーコントロール */}
-      <Box sx={{ p: 2, borderTop: 1, borderColor: 'divider' }}>
+      {/* スワイプバー（境界操作専用エリア） */}
+      <Box
+        sx={{
+          p: 2,
+          borderTop: 1,
+          borderColor: 'divider',
+          backgroundColor: 'action.hover',
+        }}
+        onWheel={handleSwipeBarWheel}
+      >
         <Typography variant="body2" color="text.secondary" gutterBottom>
           Swipe Position: {Math.round(swipePosition)}%
+          <Typography component="span" variant="caption" color="text.disabled" sx={{ ml: 1 }}>
+            (Option + Scroll to adjust)
+          </Typography>
         </Typography>
         <Slider
           value={swipePosition}
@@ -190,7 +165,19 @@ export const SwipeLayout: React.FC<SwipeLayoutProps> = ({ sx }) => {
           min={0}
           max={100}
           step={1}
-          sx={{ mt: 1 }}
+          sx={{
+            mt: 1,
+            '& .MuiSlider-thumb': {
+              width: 20,
+              height: 20,
+            },
+            '& .MuiSlider-track': {
+              height: 4,
+            },
+            '& .MuiSlider-rail': {
+              height: 4,
+            },
+          }}
         />
       </Box>
     </Box>

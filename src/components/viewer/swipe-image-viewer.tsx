@@ -88,14 +88,14 @@ export const SwipeImageViewer: React.FC<SwipeImageViewerProps> = ({
     // 長辺が収まるように、小さい方のスケールを使用
     const baseScale = Math.min(scaleX, scaleY);
 
-    // Swipeモードでは常にズーム1.0（フィットサイズ）、パンなし
-    const finalScale = baseScale * 1.0;
+    // Swipeモードでもズーム・パン機能を有効化
+    const finalScale = baseScale * viewerState.zoom;
     const drawWidth = imageElement.width * finalScale;
     const drawHeight = imageElement.height * finalScale;
 
-    // 画像をコンテナの中央に配置する計算（パンなし）
-    const centerX = (rect.width - drawWidth) / 2;
-    const centerY = (rect.height - drawHeight) / 2;
+    // 画像をコンテナの中央に配置し、パンオフセットを適用
+    const centerX = (rect.width - drawWidth) / 2 + viewerState.panX;
+    const centerY = (rect.height - drawHeight) / 2 + viewerState.panY;
 
     // 変換行列を設定（中央配置）
     ctx.save();
@@ -113,7 +113,15 @@ export const SwipeImageViewer: React.FC<SwipeImageViewerProps> = ({
     ctx.drawImage(imageElement, 0, 0, drawWidth, drawHeight);
 
     ctx.restore();
-  }, [imageElement, viewerState.rotation, viewerState.flipX, viewerState.flipY]);
+  }, [
+    imageElement,
+    viewerState.rotation,
+    viewerState.flipX,
+    viewerState.flipY,
+    viewerState.zoom,
+    viewerState.panX,
+    viewerState.panY,
+  ]);
 
   // 画像が変更されたときに再描画
   useEffect(() => {

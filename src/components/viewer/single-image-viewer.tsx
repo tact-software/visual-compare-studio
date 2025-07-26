@@ -1,6 +1,7 @@
 import React, { useRef, useEffect, useState, useCallback } from 'react';
 import { Box, Typography, CircularProgress } from '@mui/material';
 import { useViewerStore } from '../../stores/viewer-store';
+import { useViewerOperations } from '../../hooks/use-viewer-operations';
 import { ImageFile } from '../../types';
 
 interface SingleImageViewerProps {
@@ -17,9 +18,10 @@ export const SingleImageViewer: React.FC<SingleImageViewerProps> = ({
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const [isLoading, setIsLoading] = useState(false);
-  const [isDragging, setIsDragging] = useState(false);
-  const [dragStart, setDragStart] = useState({ x: 0, y: 0 });
   const [imageElement, setImageElement] = useState<HTMLImageElement | null>(null);
+
+  // 共通操作ハンドラーを使用
+  const { createWheelHandler, createMouseDownHandler } = useViewerOperations();
 
   const viewerState = useViewerStore((state) => {
     switch (viewerType) {
@@ -137,50 +139,9 @@ export const SingleImageViewer: React.FC<SingleImageViewerProps> = ({
     drawImage();
   }, [drawImage]);
 
-  // ホイールイベントでズーム
-  const handleWheel = useCallback(
-    (e: React.WheelEvent) => {
-      e.preventDefault();
-      const zoomFactor = e.deltaY > 0 ? 0.9 : 1.1;
-      const newZoom = Math.max(0.1, Math.min(10, viewerState.zoom * zoomFactor));
-      setViewerState({ zoom: newZoom });
-    },
-    [viewerState.zoom, setViewerState]
-  );
-
-  // マウスダウンでドラッグ開始
-  const handleMouseDown = useCallback(
-    (e: React.MouseEvent) => {
-      if (e.button === 0) {
-        // 左クリック
-        setIsDragging(true);
-        setDragStart({ x: e.clientX - viewerState.panX, y: e.clientY - viewerState.panY });
-      }
-    },
-    [viewerState.panX, viewerState.panY]
-  );
-
-  // マウス移動でパン
-  const handleMouseMove = useCallback(
-    (e: React.MouseEvent) => {
-      if (!isDragging) return;
-
-      const newPanX = e.clientX - dragStart.x;
-      const newPanY = e.clientY - dragStart.y;
-      setViewerState({ panX: newPanX, panY: newPanY });
-    },
-    [isDragging, dragStart, setViewerState]
-  );
-
-  // マウスアップでドラッグ終了
-  const handleMouseUp = useCallback(() => {
-    setIsDragging(false);
-  }, []);
-
-  // マウスリーブでドラッグ終了
-  const handleMouseLeave = useCallback(() => {
-    setIsDragging(false);
-  }, []);
+  // 共通ハンドラーを取得
+  const handleWheel = createWheelHandler();
+  const handleMouseDown = createMouseDownHandler();
 
   // ダブルクリックでリセット（画像を中央に配置）
   const handleDoubleClick = useCallback(() => {
@@ -195,14 +156,14 @@ export const SingleImageViewer: React.FC<SingleImageViewerProps> = ({
         height: '100%',
         position: 'relative',
         overflow: 'hidden',
-        cursor: isDragging ? 'grabbing' : 'grab',
+        cursor: 'grab',
+        '&:active': {
+          cursor: 'grabbing',
+        },
         ...sx,
       }}
       onWheel={handleWheel}
       onMouseDown={handleMouseDown}
-      onMouseMove={handleMouseMove}
-      onMouseUp={handleMouseUp}
-      onMouseLeave={handleMouseLeave}
       onDoubleClick={handleDoubleClick}
     >
       <canvas

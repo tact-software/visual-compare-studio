@@ -1,7 +1,8 @@
-import React, { useState, useCallback, useRef, useEffect } from 'react';
+import React, { useState, useCallback, useRef } from 'react';
 import { Box, Slider, Typography } from '@mui/material';
 import { SingleImageViewer } from './single-image-viewer';
 import { useFileStore } from '../../stores/file-store';
+import { useViewerOperations } from '../../hooks/use-viewer-operations';
 
 interface TopBottomSwipeLayoutProps {
   sx?: Record<string, unknown>;
@@ -10,63 +11,34 @@ interface TopBottomSwipeLayoutProps {
 export const TopBottomSwipeLayout: React.FC<TopBottomSwipeLayoutProps> = ({ sx }) => {
   const { files, selectedFiles } = useFileStore();
   const [swipePosition, setSwipePosition] = useState(50); // パーセンテージ
-  const [isDragging, setIsDragging] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
+
+  // 共通の画像操作ハンドラー
+  const { createWheelHandler, createMouseDownHandler } = useViewerOperations();
+  const handleImageWheel = createWheelHandler();
+  const handleImageMouseDown = createMouseDownHandler();
 
   // 選択されたファイルを取得
   const selectedFileObjects = files.filter((file) => selectedFiles.includes(file.id));
   const topImage = selectedFileObjects[0];
   const bottomImage = selectedFileObjects[1];
 
-  // マウスドラッグでスワイプ位置を変更
-  const handleMouseDown = useCallback((e: React.MouseEvent) => {
-    setIsDragging(true);
-    e.preventDefault();
-  }, []);
+  // スライダーエリアでの境界移動を処理（Option + スクロール）
+  const handleSliderWheel = useCallback(
+    (e: React.WheelEvent) => {
+      e.preventDefault();
+      e.stopPropagation();
 
-  const handleMouseMove = useCallback(
-    (e: React.MouseEvent) => {
-      if (!isDragging || !containerRef.current) return;
+      // macOSのOptionキー（Alt）検出
+      const isOptionPressed = e.altKey || e.getModifierState?.('Alt');
 
-      const rect = containerRef.current.getBoundingClientRect();
-      const newPosition = ((e.clientY - rect.top) / rect.height) * 100;
-      setSwipePosition(Math.max(0, Math.min(100, newPosition)));
+      if (isOptionPressed) {
+        const delta = e.deltaY > 0 ? 2 : -2;
+        setSwipePosition((prev) => Math.max(0, Math.min(100, prev + delta)));
+      }
     },
-    [isDragging]
+    [setSwipePosition]
   );
-
-  const handleMouseUp = useCallback(() => {
-    setIsDragging(false);
-  }, []);
-
-  const handleMouseLeave = useCallback(() => {
-    setIsDragging(false);
-  }, []);
-
-  // グローバルマウスイベントリスナー
-  useEffect(() => {
-    const handleGlobalMouseMove = (e: MouseEvent) => {
-      if (!isDragging || !containerRef.current) return;
-
-      const rect = containerRef.current.getBoundingClientRect();
-      const newPosition = ((e.clientY - rect.top) / rect.height) * 100;
-      setSwipePosition(Math.max(0, Math.min(100, newPosition)));
-    };
-
-    const handleGlobalMouseUp = () => {
-      setIsDragging(false);
-    };
-
-    if (isDragging) {
-      document.addEventListener('mousemove', handleGlobalMouseMove);
-      document.addEventListener('mouseup', handleGlobalMouseUp);
-    }
-
-    return () => {
-      document.removeEventListener('mousemove', handleGlobalMouseMove);
-      document.removeEventListener('mouseup', handleGlobalMouseUp);
-    };
-  }, [isDragging]);
 
   if (!topImage || !bottomImage) {
     return (
@@ -100,12 +72,13 @@ export const TopBottomSwipeLayout: React.FC<TopBottomSwipeLayoutProps> = ({ sx }
           flex: 1,
           position: 'relative',
           overflow: 'hidden',
-          cursor: isDragging ? 'grabbing' : 'grab',
+          cursor: 'grab',
+          '&:active': {
+            cursor: 'grabbing',
+          },
         }}
-        onMouseDown={handleMouseDown}
-        onMouseMove={handleMouseMove}
-        onMouseUp={handleMouseUp}
-        onMouseLeave={handleMouseLeave}
+        onWheel={handleImageWheel}
+        onMouseDown={handleImageMouseDown}
       >
         {/* ベース画像（下側の画像） */}
         <Box sx={{ position: 'absolute', width: '100%', height: '100%' }}>
@@ -136,30 +109,19 @@ export const TopBottomSwipeLayout: React.FC<TopBottomSwipeLayoutProps> = ({ sx }
           </Box>
         </Box>
 
-        {/* スワイプライン */}
-        <Box
-          sx={{
+        {/* 境界ライン（表示のみ、操作不可の単純なライン） */}
+        <div
+          style={{
             position: 'absolute',
             top: `${swipePosition}%`,
             left: 0,
             width: '100%',
-            height: '2px',
-            backgroundColor: 'primary.main',
+            height: '1px',
+            backgroundColor: '#666666',
             transform: 'translateY(-50%)',
-            cursor: 'ns-resize',
-            '&::before': {
-              content: '""',
-              position: 'absolute',
-              top: '50%',
-              left: '50%',
-              transform: 'translate(-50%, -50%)',
-              width: '20px',
-              height: '20px',
-              borderRadius: '50%',
-              backgroundColor: 'primary.main',
-              border: '2px solid white',
-              boxShadow: '0 2px 4px rgba(0,0,0,0.3)',
-            },
+            pointerEvents: 'none',
+            opacity: 0.7,
+            zIndex: 1,
           }}
         />
       </Box>
@@ -171,10 +133,12 @@ export const TopBottomSwipeLayout: React.FC<TopBottomSwipeLayoutProps> = ({ sx }
           p: 1,
           borderLeft: 1,
           borderColor: 'divider',
+          backgroundColor: 'action.hover',
           display: 'flex',
           flexDirection: 'column',
           alignItems: 'center',
         }}
+        onWheel={handleSliderWheel}
       >
         <Typography
           variant="caption"
@@ -185,6 +149,18 @@ export const TopBottomSwipeLayout: React.FC<TopBottomSwipeLayoutProps> = ({ sx }
           }}
         >
           {Math.round(swipePosition)}%
+        </Typography>
+        <Typography
+          variant="caption"
+          color="text.disabled"
+          sx={{
+            mb: 1,
+            fontSize: '0.6rem',
+            textAlign: 'center',
+            lineHeight: 1.2,
+          }}
+        >
+          Option + Scroll
         </Typography>
         <Slider
           value={100 - swipePosition}
@@ -198,6 +174,10 @@ export const TopBottomSwipeLayout: React.FC<TopBottomSwipeLayoutProps> = ({ sx }
           orientation="vertical"
           sx={{
             flex: 1,
+            '& .MuiSlider-thumb': {
+              width: 16,
+              height: 16,
+            },
             '& .MuiSlider-rail': {
               width: 4,
             },
