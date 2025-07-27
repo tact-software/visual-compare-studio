@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import {
   Box,
   Typography,
@@ -30,6 +31,7 @@ export const FileNavigationPanel: React.FC<FileNavigationPanelProps> = ({
   onNext,
   maxThumbnails = 5,
 }) => {
+  const { t } = useTranslation();
   const currentFile = files[currentIndex];
   const totalFiles = files.length;
 
@@ -78,7 +80,7 @@ export const FileNavigationPanel: React.FC<FileNavigationPanelProps> = ({
         }}
       >
         <Typography variant="body2" color="text.secondary">
-          画像が選択されていません
+          {t('navigation.noImageSelected')}
         </Typography>
       </Paper>
     );
@@ -119,7 +121,7 @@ export const FileNavigationPanel: React.FC<FileNavigationPanelProps> = ({
 
       {/* ナビゲーションボタン */}
       <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
-        <Tooltip title="最初の画像">
+        <Tooltip title={t('navigation.firstImage')}>
           <span>
             <IconButton size="small" onClick={handleFirstPage} disabled={!canGoPrevious}>
               <FirstPage fontSize="small" />
@@ -127,7 +129,7 @@ export const FileNavigationPanel: React.FC<FileNavigationPanelProps> = ({
           </span>
         </Tooltip>
 
-        <Tooltip title="前の画像">
+        <Tooltip title={t('navigation.previousImage')}>
           <span>
             <IconButton size="small" onClick={onPrevious} disabled={!canGoPrevious}>
               <NavigateBefore fontSize="small" />
@@ -139,11 +141,11 @@ export const FileNavigationPanel: React.FC<FileNavigationPanelProps> = ({
           <Typography variant="caption" color="text.secondary">
             {currentFile?.width && currentFile?.height
               ? `${currentFile.width} × ${currentFile.height}`
-              : '寸法不明'}
+              : t('navigation.dimensionUnknown')}
           </Typography>
         </Box>
 
-        <Tooltip title="次の画像">
+        <Tooltip title={t('navigation.nextImage')}>
           <span>
             <IconButton size="small" onClick={onNext} disabled={!canGoNext}>
               <NavigateNext fontSize="small" />
@@ -151,7 +153,7 @@ export const FileNavigationPanel: React.FC<FileNavigationPanelProps> = ({
           </span>
         </Tooltip>
 
-        <Tooltip title="最後の画像">
+        <Tooltip title={t('navigation.lastImage')}>
           <span>
             <IconButton size="small" onClick={handleLastPage} disabled={!canGoNext}>
               <LastPage fontSize="small" />
@@ -232,7 +234,7 @@ export const FileNavigationPanel: React.FC<FileNavigationPanelProps> = ({
       {totalFiles > maxThumbnails && (
         <Box sx={{ display: 'flex', justifyContent: 'center' }}>
           <Typography variant="caption" color="text.secondary">
-            {start + 1} - {end + 1} / {totalFiles} 表示中
+            {start + 1} - {end + 1} / {totalFiles} {t('navigation.showing')}
           </Typography>
         </Box>
       )}

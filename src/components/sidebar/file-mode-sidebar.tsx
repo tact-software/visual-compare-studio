@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import {
   Box,
   Card,
@@ -17,6 +18,7 @@ import { useFileStore } from '../../stores/file-store';
 import { useFileDialog } from '../../hooks/use-file-dialog';
 
 export const FileModeSidebar: React.FC = () => {
+  const { t } = useTranslation();
   const { files, selectedFiles, removeFile, clearFiles, selectFile, deselectFile } = useFileStore();
   const { openFiles } = useFileDialog();
 
@@ -48,7 +50,10 @@ export const FileModeSidebar: React.FC = () => {
     >
       <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, flex: 1, overflow: 'auto' }}>
         <Card>
-          <CardHeader title={<Typography variant="h6">Files</Typography>} sx={{ pb: 1 }} />
+          <CardHeader
+            title={<Typography variant="h6">{t('sidebar.files')}</Typography>}
+            sx={{ pb: 1 }}
+          />
           <CardContent sx={{ pt: 0 }}>
             <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
               <Button
@@ -58,7 +63,7 @@ export const FileModeSidebar: React.FC = () => {
                 size="small"
                 onClick={() => void openFiles()}
               >
-                Open Files
+                {t('toolbar.openFiles')}
               </Button>
             </Box>
           </CardContent>
@@ -66,11 +71,11 @@ export const FileModeSidebar: React.FC = () => {
 
         <Card>
           <CardHeader
-            title={<Typography variant="h6">Current Files</Typography>}
+            title={<Typography variant="h6">{t('sidebar.files')}</Typography>}
             sx={{ pb: 1 }}
             action={
               files.length > 0 && (
-                <IconButton size="small" onClick={clearFiles} title="Clear all files">
+                <IconButton size="small" onClick={clearFiles} title={t('common.clear')}>
                   <Delete fontSize="small" />
                 </IconButton>
               )
@@ -79,7 +84,7 @@ export const FileModeSidebar: React.FC = () => {
           <CardContent sx={{ pt: 0 }}>
             {files.length === 0 ? (
               <Typography variant="body2" color="text.secondary">
-                No files loaded
+                {t('sidebar.noFiles')}
               </Typography>
             ) : (
               <List dense>
@@ -103,7 +108,7 @@ export const FileModeSidebar: React.FC = () => {
                           e.stopPropagation();
                           removeFile(file.id);
                         }}
-                        title="Remove file"
+                        title={t('common.remove')}
                       >
                         <Close fontSize="small" />
                       </IconButton>

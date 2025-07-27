@@ -1,4 +1,5 @@
 import React, { useCallback, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import {
   Box,
   Card,
@@ -22,6 +23,7 @@ import { useFileStore } from '../../stores/file-store';
 import { useFileDialog } from '../../hooks/use-file-dialog';
 
 export const FolderModeSidebar: React.FC = () => {
+  const { t } = useTranslation();
   const {
     folder1Path,
     folder2Path,
@@ -64,7 +66,6 @@ export const FolderModeSidebar: React.FC = () => {
     if (!currentMatch) return;
 
     try {
-      console.log('Loading image data for:', currentMatch.fileName);
       // 画像データをロード
       await loadImageData(currentMatch.fileName);
 
@@ -79,34 +80,20 @@ export const FolderModeSidebar: React.FC = () => {
         // 画像データがロードされたファイルを追加
         const filesToAdd = [];
         if (updatedMatch.file1.imageData) {
-          console.log('File1 has imageData:', updatedMatch.file1.name);
           filesToAdd.push(updatedMatch.file1);
-        } else {
-          console.log('File1 missing imageData:', updatedMatch.file1.name);
         }
         if (updatedMatch.file2.imageData) {
-          console.log('File2 has imageData:', updatedMatch.file2.name);
           filesToAdd.push(updatedMatch.file2);
-        } else {
-          console.log('File2 missing imageData:', updatedMatch.file2.name);
         }
 
         if (filesToAdd.length > 0) {
-          console.log(
-            'Adding files to store:',
-            filesToAdd.length,
-            filesToAdd[0]?.name,
-            filesToAdd[1]?.name
-          );
           addFiles(filesToAdd);
           // ファイルを選択状態にする
           setSelectedFiles(filesToAdd.map((f) => f.id));
-        } else {
-          console.log('No files to add - imageData not loaded');
         }
       }
-    } catch (error) {
-      console.error('Failed to load and display current match:', error);
+    } catch {
+      // エラーは静かに無視
     }
   }, [loadImageData, clearFiles, addFiles, setSelectedFiles]);
 
@@ -142,12 +129,15 @@ export const FolderModeSidebar: React.FC = () => {
       <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, flex: 1, overflow: 'auto' }}>
         {/* フォルダ選択 */}
         <Card>
-          <CardHeader title={<Typography variant="h6">フォルダ選択</Typography>} sx={{ pb: 1 }} />
+          <CardHeader
+            title={<Typography variant="h6">{t('sidebar.folderSelection')}</Typography>}
+            sx={{ pb: 1 }}
+          />
           <CardContent sx={{ pt: 0 }}>
             <Stack spacing={2}>
               <Box>
                 <Typography variant="caption" color="text.secondary">
-                  フォルダ1
+                  {t('sidebar.folder1')}
                 </Typography>
                 <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mt: 0.5 }}>
                   <Typography
@@ -160,7 +150,7 @@ export const FolderModeSidebar: React.FC = () => {
                     }}
                     title={folder1Path || ''}
                   >
-                    {folder1Path ? folder1Path.split('/').pop() : '未選択'}
+                    {folder1Path ? folder1Path.split('/').pop() : t('sidebar.notSelected')}
                   </Typography>
                   <IconButton size="small" onClick={() => void handleOpenFolder1()}>
                     <FolderOpen fontSize="small" />
@@ -170,7 +160,7 @@ export const FolderModeSidebar: React.FC = () => {
 
               <Box>
                 <Typography variant="caption" color="text.secondary">
-                  フォルダ2
+                  {t('sidebar.folder2')}
                 </Typography>
                 <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mt: 0.5 }}>
                   <Typography
@@ -183,7 +173,7 @@ export const FolderModeSidebar: React.FC = () => {
                     }}
                     title={folder2Path || ''}
                   >
-                    {folder2Path ? folder2Path.split('/').pop() : '未選択'}
+                    {folder2Path ? folder2Path.split('/').pop() : t('sidebar.notSelected')}
                   </Typography>
                   <IconButton size="small" onClick={() => void handleOpenFolder2()}>
                     <FolderOpen fontSize="small" />
@@ -199,7 +189,7 @@ export const FolderModeSidebar: React.FC = () => {
                   onClick={handleAnalyze}
                   disabled={isLoading}
                 >
-                  解析
+                  {t('sidebar.analyze')}
                 </Button>
               )}
             </Stack>
@@ -243,7 +233,7 @@ export const FolderModeSidebar: React.FC = () => {
                   onClick={cancelAnalysis}
                   sx={{ mt: 1 }}
                 >
-                  キャンセル
+                  {t('common.cancel')}
                 </Button>
               </Box>
             </CardContent>
@@ -254,7 +244,7 @@ export const FolderModeSidebar: React.FC = () => {
         {isAnalyzed && matchedFiles.length > 0 && (
           <Card>
             <CardHeader
-              title={<Typography variant="h6">画像移動</Typography>}
+              title={<Typography variant="h6">{t('sidebar.navigation')}</Typography>}
               sx={{ pb: 1 }}
               action={
                 <Chip
@@ -290,7 +280,7 @@ export const FolderModeSidebar: React.FC = () => {
         {isAnalyzed && matchedFiles.length > 0 && (
           <Card>
             <CardHeader
-              title={<Typography variant="h6">同名ファイル一覧</Typography>}
+              title={<Typography variant="h6">{t('sidebar.matchedFiles')}</Typography>}
               sx={{ pb: 1 }}
             />
             <CardContent sx={{ pt: 0 }}>
@@ -317,7 +307,7 @@ export const FolderModeSidebar: React.FC = () => {
                               1024 /
                               1024
                             ).toFixed(2)} MB`
-                          : '読み込み待ち'
+                          : t('sidebar.loadingData')
                       }
                       primaryTypographyProps={{ variant: 'body2' }}
                       secondaryTypographyProps={{ variant: 'caption' }}

@@ -1,10 +1,12 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { Box, Typography, Chip, LinearProgress } from '@mui/material';
 import { Image, Memory, Folder } from '@mui/icons-material';
 import { useFileStore } from '../../stores/file-store';
 import { useAppStore } from '../../stores/app-store';
 
 export const StatusBar: React.FC = () => {
+  const { t } = useTranslation();
   const { files, selectedFiles } = useFileStore();
   const { isLoading } = useAppStore();
 
@@ -50,7 +52,7 @@ export const StatusBar: React.FC = () => {
       <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
         <Folder fontSize="small" />
         <Typography variant="caption" color="text.secondary">
-          {files.length} files
+          {t('statusBar.filesSelected', { count: files.length })}
         </Typography>
       </Box>
 
@@ -58,7 +60,7 @@ export const StatusBar: React.FC = () => {
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
           <Image fontSize="small" />
           <Typography variant="caption" color="text.secondary">
-            {selectedCount} selected
+            {t('statusBar.filesSelected', { count: selectedCount })} selected
           </Typography>
         </Box>
       )}
@@ -66,7 +68,7 @@ export const StatusBar: React.FC = () => {
       <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, ml: 'auto' }}>
         <Memory fontSize="small" />
         <Typography variant="caption" color="text.secondary">
-          Total: {formatSize(totalSize)}
+          {t('common.total')}: {formatSize(totalSize)}
         </Typography>
       </Box>
 

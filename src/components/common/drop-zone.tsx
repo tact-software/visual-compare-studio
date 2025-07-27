@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { Box, Typography, Paper, alpha, useTheme } from '@mui/material';
 import { CloudUpload } from '@mui/icons-material';
 import { useDragDrop } from '../../hooks/use-drag-drop';
@@ -8,6 +9,7 @@ interface DropZoneProps {
 }
 
 export const DropZone: React.FC<DropZoneProps> = ({ children }) => {
+  const { t } = useTranslation();
   const theme = useTheme();
   const { isDragging, handleDragEnter, handleDragLeave, handleDragOver, handleDrop } =
     useDragDrop();
@@ -42,10 +44,10 @@ export const DropZone: React.FC<DropZoneProps> = ({ children }) => {
         >
           <CloudUpload sx={{ fontSize: 64, color: 'primary.main', mb: 2 }} />
           <Typography variant="h6" color="primary">
-            Drop images here
+            {t('dropZone.dropImagesHere')}
           </Typography>
           <Typography variant="body2" color="text.secondary">
-            Supported formats: JPG, PNG, WebP, AVIF, BMP, GIF
+            {t('dropZone.supportedFormats')}
           </Typography>
         </Paper>
       )}

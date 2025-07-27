@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import {
   Box,
   Button,
@@ -31,6 +32,7 @@ import { useFolderStore } from '../../stores/folder-store';
 import { useSettingsStore } from '../../stores/settings-store';
 
 export const Toolbar: React.FC = () => {
+  const { t } = useTranslation();
   const { currentLayout, setLayout, isFolderMode, setFolderMode, setLoading } = useAppStore();
   const { theme, setTheme } = useTheme();
   const { leftViewer, resetAllViewers, syncZoomToAll } = useViewerStore();
@@ -39,8 +41,8 @@ export const Toolbar: React.FC = () => {
   const { openSettingsDialog } = useSettingsStore();
 
   const layoutOptions = [
-    { type: 'side-by-side', label: 'Side by Side' },
-    { type: 'top-bottom', label: 'Top/Bottom' },
+    { type: 'side-by-side', label: t('layout.sideBySide') },
+    { type: 'top-bottom', label: t('layout.topBottom') },
   ] as const;
 
   const handleThemeToggle = () => {
@@ -72,7 +74,7 @@ export const Toolbar: React.FC = () => {
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, flex: 1 }}>
           {/* モード切替 */}
           <Typography variant="caption" color="text.secondary" sx={{ minWidth: 'auto' }}>
-            Mode:
+            {t('toolbar.mode')}:
           </Typography>
           <ToggleButtonGroup
             size="small"
@@ -101,12 +103,12 @@ export const Toolbar: React.FC = () => {
             }}
           >
             <ToggleButton value="file" aria-label="file mode">
-              <Tooltip title="File Mode">
+              <Tooltip title={t('mode.file')}>
                 <InsertDriveFile fontSize="small" />
               </Tooltip>
             </ToggleButton>
             <ToggleButton value="folder" aria-label="folder mode">
-              <Tooltip title="Folder Mode">
+              <Tooltip title={t('mode.folder')}>
                 <Folder fontSize="small" />
               </Tooltip>
             </ToggleButton>
@@ -114,7 +116,7 @@ export const Toolbar: React.FC = () => {
 
           {/* レイアウト選択（全モード共通） */}
           <Typography variant="caption" color="text.secondary" sx={{ minWidth: 'auto' }}>
-            Layout:
+            {t('toolbar.layout')}:
           </Typography>
           <ButtonGroup size="small" variant="outlined">
             {layoutOptions.map((layout) => (
@@ -131,7 +133,7 @@ export const Toolbar: React.FC = () => {
 
           {/* View Mode切り替え（全モード共通） */}
           <Typography variant="caption" color="text.secondary" sx={{ minWidth: 'auto' }}>
-            View:
+            {t('toolbar.view')}:
           </Typography>
           <ButtonGroup size="small" variant="outlined">
             <Button
@@ -143,21 +145,21 @@ export const Toolbar: React.FC = () => {
               onClick={() => setLayout({ ...currentLayout, viewMode: 'split' })}
               sx={{ px: 1, py: 0.5, fontSize: '0.75rem', minWidth: 'auto' }}
             >
-              Split
+              {t('layout.split')}
             </Button>
             <Button
               variant={currentLayout.viewMode === 'swipe' ? 'contained' : 'outlined'}
               onClick={() => setLayout({ ...currentLayout, viewMode: 'swipe' })}
               sx={{ px: 1, py: 0.5, fontSize: '0.75rem', minWidth: 'auto' }}
             >
-              Swipe
+              {t('layout.swipe')}
             </Button>
           </ButtonGroup>
         </Box>
 
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
           {/* ズームコントロール（全モード共通） */}
-          <Tooltip title="Zoom In">
+          <Tooltip title={t('toolbar.zoomIn')}>
             <IconButton
               size="small"
               color="primary"
@@ -166,7 +168,7 @@ export const Toolbar: React.FC = () => {
               <ZoomIn />
             </IconButton>
           </Tooltip>
-          <Tooltip title="Zoom Out">
+          <Tooltip title={t('toolbar.zoomOut')}>
             <IconButton
               size="small"
               color="primary"
@@ -175,7 +177,7 @@ export const Toolbar: React.FC = () => {
               <ZoomOut />
             </IconButton>
           </Tooltip>
-          <Tooltip title="Reset View">
+          <Tooltip title={t('toolbar.resetView')}>
             <IconButton size="small" color="primary" onClick={resetAllViewers}>
               <CenterFocusStrong />
             </IconButton>
@@ -183,7 +185,7 @@ export const Toolbar: React.FC = () => {
 
           <Divider orientation="vertical" flexItem sx={{ mx: 1 }} />
 
-          <Tooltip title="設定">
+          <Tooltip title={t('common.settings')}>
             <IconButton size="small" onClick={openSettingsDialog}>
               <Settings />
             </IconButton>

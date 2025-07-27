@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import {
   Dialog,
   DialogTitle,
@@ -50,16 +51,10 @@ const sectionIcons: Record<SettingsSection, React.ReactElement> = {
   info: <Info />,
 };
 
-const sectionLabels: Record<SettingsSection, string> = {
-  general: '一般',
-  display: '表示',
-  imageDisplay: '画像表示',
-  compare: '比較',
-  operation: '操作',
-  info: '情報',
-};
+// 翻訳対応で動的にラベルを取得するため、関数内で定義
 
 export const SettingsDialog: React.FC = () => {
+  const { t } = useTranslation();
   const {
     general,
     display,
@@ -129,9 +124,29 @@ export const SettingsDialog: React.FC = () => {
 
   // リセット
   const handleReset = () => {
-    if (confirm('すべての設定をデフォルトに戻しますか？')) {
+    if (confirm(t('settings.confirmReset'))) {
       resetAllSettings();
       closeSettingsDialog();
+    }
+  };
+
+  // セクションラベルを翻訳対応で取得
+  const getSectionLabel = (section: SettingsSection): string => {
+    switch (section) {
+      case 'general':
+        return t('settings.general');
+      case 'display':
+        return t('settings.display');
+      case 'imageDisplay':
+        return t('settings.imageDisplay');
+      case 'compare':
+        return t('settings.compare');
+      case 'operation':
+        return t('settings.operation');
+      case 'info':
+        return t('settings.appInfo.version');
+      default:
+        return section;
     }
   };
 
@@ -147,17 +162,17 @@ export const SettingsDialog: React.FC = () => {
         return (
           <Box>
             <Typography variant="h6" gutterBottom>
-              一般設定
+              {t('settings.general')}
             </Typography>
             <FormControl fullWidth sx={{ mt: 2 }}>
-              <InputLabel>言語</InputLabel>
+              <InputLabel>{t('settings.language.title')}</InputLabel>
               <Select
                 value={tempSettings.general.language}
-                label="言語"
+                label={t('settings.language.title')}
                 onChange={(e) => handleSettingChange('general', 'language', e.target.value)}
               >
-                <MenuItem value="ja">日本語</MenuItem>
-                <MenuItem value="en">English</MenuItem>
+                <MenuItem value="ja">{t('settings.language.japanese')}</MenuItem>
+                <MenuItem value="en">{t('settings.language.english')}</MenuItem>
               </Select>
             </FormControl>
           </Box>
@@ -167,19 +182,31 @@ export const SettingsDialog: React.FC = () => {
         return (
           <Box>
             <Typography variant="h6" gutterBottom>
-              表示設定
+              {t('settings.display')}
             </Typography>
             <FormControl sx={{ mt: 2 }}>
               <Typography variant="subtitle2" gutterBottom>
-                テーマ
+                {t('settings.theme.title')}
               </Typography>
               <RadioGroup
                 value={tempSettings.display.theme}
                 onChange={(e) => handleSettingChange('display', 'theme', e.target.value)}
               >
-                <FormControlLabel value="light" control={<Radio />} label="ライト" />
-                <FormControlLabel value="dark" control={<Radio />} label="ダーク" />
-                <FormControlLabel value="system" control={<Radio />} label="システム設定に従う" />
+                <FormControlLabel
+                  value="light"
+                  control={<Radio />}
+                  label={t('settings.theme.light')}
+                />
+                <FormControlLabel
+                  value="dark"
+                  control={<Radio />}
+                  label={t('settings.theme.dark')}
+                />
+                <FormControlLabel
+                  value="system"
+                  control={<Radio />}
+                  label={t('settings.theme.system')}
+                />
               </RadioGroup>
             </FormControl>
           </Box>
@@ -189,48 +216,48 @@ export const SettingsDialog: React.FC = () => {
         return (
           <Box>
             <Typography variant="h6" gutterBottom>
-              画像表示設定
+              {t('settings.imageDisplay.title')}
             </Typography>
             <Stack spacing={3} sx={{ mt: 2 }}>
               <FormControl fullWidth>
-                <InputLabel>デフォルトの表示モード</InputLabel>
+                <InputLabel>{t('settings.imageDisplay.defaultMode')}</InputLabel>
                 <Select
                   value={tempSettings.imageDisplay.defaultMode}
-                  label="デフォルトの表示モード"
+                  label={t('settings.imageDisplay.defaultMode')}
                   onChange={(e) =>
                     handleSettingChange('imageDisplay', 'defaultMode', e.target.value)
                   }
                 >
-                  <MenuItem value="file">ファイルモード</MenuItem>
-                  <MenuItem value="folder">フォルダモード</MenuItem>
+                  <MenuItem value="file">{t('mode.file')}</MenuItem>
+                  <MenuItem value="folder">{t('mode.folder')}</MenuItem>
                 </Select>
               </FormControl>
 
               <FormControl fullWidth>
-                <InputLabel>デフォルトのレイアウト</InputLabel>
+                <InputLabel>{t('settings.imageDisplay.defaultLayout')}</InputLabel>
                 <Select
                   value={tempSettings.imageDisplay.defaultLayout}
-                  label="デフォルトのレイアウト"
+                  label={t('settings.imageDisplay.defaultLayout')}
                   onChange={(e) =>
                     handleSettingChange('imageDisplay', 'defaultLayout', e.target.value)
                   }
                 >
-                  <MenuItem value="side-by-side">横並び</MenuItem>
-                  <MenuItem value="top-bottom">縦並び</MenuItem>
+                  <MenuItem value="side-by-side">{t('layout.sideBySide')}</MenuItem>
+                  <MenuItem value="top-bottom">{t('layout.topBottom')}</MenuItem>
                 </Select>
               </FormControl>
 
               <FormControl fullWidth>
-                <InputLabel>デフォルトのビューモード</InputLabel>
+                <InputLabel>{t('settings.imageDisplay.defaultViewMode')}</InputLabel>
                 <Select
                   value={tempSettings.imageDisplay.defaultViewMode}
-                  label="デフォルトのビューモード"
+                  label={t('settings.imageDisplay.defaultViewMode')}
                   onChange={(e) =>
                     handleSettingChange('imageDisplay', 'defaultViewMode', e.target.value)
                   }
                 >
-                  <MenuItem value="split">スプリット</MenuItem>
-                  <MenuItem value="swipe">スワイプ</MenuItem>
+                  <MenuItem value="split">{t('layout.split')}</MenuItem>
+                  <MenuItem value="swipe">{t('layout.swipe')}</MenuItem>
                 </Select>
               </FormControl>
             </Stack>
@@ -241,15 +268,15 @@ export const SettingsDialog: React.FC = () => {
         return (
           <Box>
             <Typography variant="h6" gutterBottom>
-              比較設定
+              {t('settings.compare.title')}
             </Typography>
             <Typography variant="subtitle2" sx={{ mt: 2 }} gutterBottom>
-              境界線（スワイプモード）
+              {t('settings.compare.boundary')}
             </Typography>
             <Stack spacing={3}>
               <Box>
                 <Typography variant="body2" color="text.secondary" gutterBottom>
-                  色: {tempSettings.compare.boundaryColor}
+                  {t('settings.compare.color')}: {tempSettings.compare.boundaryColor}
                 </Typography>
                 <input
                   type="color"
@@ -267,7 +294,7 @@ export const SettingsDialog: React.FC = () => {
 
               <Box>
                 <Typography variant="body2" color="text.secondary" gutterBottom>
-                  太さ: {tempSettings.compare.boundaryWidth}px
+                  {t('settings.compare.width')}: {tempSettings.compare.boundaryWidth}px
                 </Typography>
                 <Slider
                   value={tempSettings.compare.boundaryWidth}
@@ -281,15 +308,15 @@ export const SettingsDialog: React.FC = () => {
               </Box>
 
               <FormControl fullWidth>
-                <InputLabel>スタイル</InputLabel>
+                <InputLabel>{t('settings.compare.style')}</InputLabel>
                 <Select
                   value={tempSettings.compare.boundaryStyle}
-                  label="スタイル"
+                  label={t('settings.compare.style')}
                   onChange={(e) => handleSettingChange('compare', 'boundaryStyle', e.target.value)}
                 >
-                  <MenuItem value="solid">実線</MenuItem>
-                  <MenuItem value="dashed">破線</MenuItem>
-                  <MenuItem value="dotted">点線</MenuItem>
+                  <MenuItem value="solid">{t('settings.compare.solid')}</MenuItem>
+                  <MenuItem value="dashed">{t('settings.compare.dashed')}</MenuItem>
+                  <MenuItem value="dotted">{t('settings.compare.dotted')}</MenuItem>
                 </Select>
               </FormControl>
             </Stack>
@@ -300,14 +327,14 @@ export const SettingsDialog: React.FC = () => {
         return (
           <Box>
             <Typography variant="h6" gutterBottom>
-              操作設定
+              {t('settings.operation.title')}
             </Typography>
             <Box sx={{ mt: 2 }}>
               <Typography variant="subtitle2" gutterBottom>
-                キーボードショートカット
+                {t('settings.operation.keyboardShortcuts')}
               </Typography>
               <Typography variant="caption" color="text.secondary" gutterBottom>
-                ※ 現在のバージョンではカスタマイズできません
+                {t('settings.operation.customizeNotAvailable')}
               </Typography>
               <Box sx={{ mt: 2 }}>
                 {Object.entries(tempSettings.operation.shortcuts).map(([key, value]) => (
@@ -324,7 +351,10 @@ export const SettingsDialog: React.FC = () => {
                     }}
                   >
                     <Typography variant="body2">
-                      {key.replace(/-/g, ' ').replace(/\b\w/g, (l) => l.toUpperCase())}
+                      {t(
+                        `settings.operation.shortcuts.${key.replace(/-/g, '')}`,
+                        key.replace(/-/g, ' ').replace(/\b\w/g, (l) => l.toUpperCase())
+                      )}
                     </Typography>
                     <Chip label={value} size="small" variant="outlined" />
                   </Box>
@@ -338,19 +368,19 @@ export const SettingsDialog: React.FC = () => {
         return (
           <Box>
             <Typography variant="h6" gutterBottom>
-              情報
+              {t('settings.appInfo.version')}
             </Typography>
             <Stack spacing={2} sx={{ mt: 2 }}>
               <Box>
-                <Typography variant="subtitle2">バージョン</Typography>
+                <Typography variant="subtitle2">{t('settings.appInfo.version')}</Typography>
                 <Typography variant="body2" color="text.secondary">
-                  Visual Compare Studio v0.1.0
+                  {t('settings.appInfo.appName')} {t('settings.appInfo.versionNumber')}
                 </Typography>
               </Box>
               <Box>
-                <Typography variant="subtitle2">開発元</Typography>
+                <Typography variant="subtitle2">{t('settings.appInfo.developer')}</Typography>
                 <Typography variant="body2" color="text.secondary">
-                  © 2024 Visual Compare Studio
+                  {t('settings.appInfo.copyright')}
                 </Typography>
               </Box>
             </Stack>
@@ -376,7 +406,7 @@ export const SettingsDialog: React.FC = () => {
         <Box display="flex" alignItems="center" justifyContent="space-between">
           <Box display="flex" alignItems="center" gap={1}>
             <SettingsIcon />
-            設定
+            {t('common.settings')}
           </Box>
           <IconButton size="small" onClick={handleCancel}>
             <Close />
@@ -394,14 +424,23 @@ export const SettingsDialog: React.FC = () => {
           }}
         >
           <List disablePadding>
-            {(Object.keys(sectionLabels) as SettingsSection[]).map((section) => (
+            {(
+              [
+                'general',
+                'display',
+                'imageDisplay',
+                'compare',
+                'operation',
+                'info',
+              ] as SettingsSection[]
+            ).map((section) => (
               <ListItem key={section} disablePadding>
                 <ListItemButton
                   selected={activeSection === section}
                   onClick={() => setActiveSection(section)}
                 >
                   <ListItemIcon>{sectionIcons[section]}</ListItemIcon>
-                  <ListItemText primary={sectionLabels[section]} />
+                  <ListItemText primary={getSectionLabel(section)} />
                 </ListItemButton>
               </ListItem>
             ))}
@@ -413,14 +452,14 @@ export const SettingsDialog: React.FC = () => {
       </DialogContent>
       <DialogActions>
         <Button onClick={handleReset} color="error">
-          すべてリセット
+          {t('settings.resetAll')}
         </Button>
         <Box sx={{ flex: 1 }} />
         <Button onClick={handleCancel} color="inherit">
-          キャンセル
+          {t('common.cancel')}
         </Button>
         <Button onClick={handleApply} variant="contained" disabled={!hasChanges}>
-          適用
+          {t('common.apply')}
         </Button>
       </DialogActions>
     </Dialog>

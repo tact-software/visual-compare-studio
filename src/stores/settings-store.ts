@@ -1,5 +1,6 @@
 import { create } from 'zustand';
 import { devtools, persist } from 'zustand/middleware';
+import i18n from '../i18n';
 
 export type Language = 'ja' | 'en';
 export type ImageFitMode = 'fit' | 'actual' | 'width' | 'height';
@@ -91,9 +92,16 @@ export const useSettingsStore = create<SettingsStore>()(
         isSettingsDialogOpen: false,
 
         updateGeneralSettings: (settings) =>
-          set((state) => ({
-            general: { ...state.general, ...settings },
-          })),
+          set((state) => {
+            const newGeneral = { ...state.general, ...settings };
+            // 言語変更時にi18nも更新
+            if (settings.language && settings.language !== state.general.language) {
+              void i18n.changeLanguage(settings.language);
+            }
+            return {
+              general: newGeneral,
+            };
+          }),
 
         updateDisplaySettings: (settings) =>
           set((state) => ({

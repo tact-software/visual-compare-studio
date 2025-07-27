@@ -1,4 +1,5 @@
 import React, { useState, useCallback, useRef } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Box, Slider, Typography } from '@mui/material';
 import { SwipeImageViewer } from './swipe-image-viewer';
 import { useFileStore } from '../../stores/file-store';
@@ -10,6 +11,7 @@ interface SwipeLayoutProps {
 }
 
 export const SwipeLayout: React.FC<SwipeLayoutProps> = ({ sx }) => {
+  const { t } = useTranslation();
   const { files, selectedFiles } = useFileStore();
   const [swipePosition, setSwipePosition] = useState(50); // パーセンテージ
   const containerRef = useRef<HTMLDivElement>(null);
@@ -58,10 +60,10 @@ export const SwipeLayout: React.FC<SwipeLayoutProps> = ({ sx }) => {
         }}
       >
         <Typography variant="h6" color="text.secondary">
-          Select two images to compare
+          {t('viewer.selectTwoImages')}
         </Typography>
         <Typography variant="body2" color="text.secondary">
-          Use the sidebar to select exactly two images for swipe comparison
+          {t('viewer.swipeComparison')}
         </Typography>
       </Box>
     );
@@ -155,9 +157,9 @@ export const SwipeLayout: React.FC<SwipeLayoutProps> = ({ sx }) => {
         onWheel={handleSwipeBarWheel}
       >
         <Typography variant="body2" color="text.secondary" gutterBottom>
-          Swipe Position: {Math.round(swipePosition)}%
+          {t('viewer.swipePosition')}: {Math.round(swipePosition)}%
           <Typography component="span" variant="caption" color="text.disabled" sx={{ ml: 1 }}>
-            (Option + Scroll to adjust)
+            ({t('viewer.optionScroll')})
           </Typography>
         </Typography>
         <Slider

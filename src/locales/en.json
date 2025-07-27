@@ -1,0 +1,190 @@
+{
+  "common": {
+    "ok": "OK",
+    "cancel": "Cancel",
+    "apply": "Apply",
+    "reset": "Reset",
+    "close": "Close",
+    "settings": "Settings",
+    "loading": "Loading...",
+    "error": "Error",
+    "warning": "Warning",
+    "information": "Info",
+    "save": "Save",
+    "delete": "Delete",
+    "edit": "Edit",
+    "add": "Add",
+    "remove": "Remove",
+    "clear": "Clear",
+    "refresh": "Refresh",
+    "back": "Back",
+    "next": "Next",
+    "previous": "Previous",
+    "search": "Search",
+    "filter": "Filter",
+    "sort": "Sort",
+    "export": "Export",
+    "import": "Import",
+    "total": "Total"
+  },
+  "layout": {
+    "sideBySide": "Side by Side",
+    "topBottom": "Top/Bottom",
+    "split": "Split",
+    "swipe": "Swipe",
+    "grid": "Grid"
+  },
+  "mode": {
+    "file": "File Mode",
+    "folder": "Folder Mode"
+  },
+  "toolbar": {
+    "mode": "Mode",
+    "layout": "Layout",
+    "view": "View",
+    "zoomIn": "Zoom In",
+    "zoomOut": "Zoom Out",
+    "resetView": "Reset View",
+    "boundarySettings": "Boundary Settings",
+    "openFiles": "Open Files",
+    "openFolder": "Open Folder"
+  },
+  "sidebar": {
+    "files": "Files",
+    "folders": "Folders",
+    "noFiles": "No files available",
+    "noFolders": "No folders available",
+    "selectFiles": "Please select files",
+    "selectFolders": "Please select folders",
+    "dragDropFiles": "Drag and drop files here",
+    "dragDropFolders": "Drag and drop folders here",
+    "folderSelection": "Folder Selection",
+    "folder1": "Folder 1",
+    "folder2": "Folder 2",
+    "notSelected": "Not selected",
+    "analyze": "Analyze",
+    "navigation": "Image Navigation",
+    "matchedFiles": "Matched Files",
+    "loadingData": "Loading..."
+  },
+  "viewer": {
+    "selectTwoImages": "Select two images to compare",
+    "useSidebar": "Use the sidebar to select exactly two images for comparison",
+    "swipeComparison": "Use the sidebar to select exactly two images for swipe comparison",
+    "verticalSwipeComparison": "Use the sidebar to select exactly two images for vertical swipe comparison",
+    "swipePosition": "Swipe Position",
+    "optionScroll": "Option + Scroll to adjust"
+  },
+  "navigation": {
+    "noImageSelected": "No image selected",
+    "firstImage": "First Image",
+    "previousImage": "Previous Image",
+    "nextImage": "Next Image",
+    "lastImage": "Last Image",
+    "dimensionUnknown": "Unknown dimensions",
+    "showing": "Showing"
+  },
+  "dropZone": {
+    "dropImagesHere": "Drop images here",
+    "supportedFormats": "Supported formats: JPG, PNG, WebP, AVIF, BMP, GIF"
+  },
+  "about": {
+    "description": "A powerful desktop application for comparing and analyzing images",
+    "technologyStack": "Technology Stack",
+    "technologyDescription": "Built with React, TypeScript, Material-UI, and Tauri",
+    "features": "Features",
+    "featuresList": {
+      "sideBySide": "Side-by-side and swipe comparison modes",
+      "folderBased": "Folder-based batch comparison",
+      "synchronized": "Synchronized zooming and panning",
+      "customizable": "Customizable interface themes",
+      "multiLanguage": "Multi-language support"
+    }
+  },
+  "statusBar": {
+    "ready": "Ready",
+    "processing": "Processing...",
+    "filesSelected": "{{count}} file(s)",
+    "foldersSelected": "{{count}} folder(s)"
+  },
+  "settings": {
+    "title": "Settings",
+    "general": "General",
+    "display": "Display",
+    "imageDisplay": "Image Display",
+    "compare": "Compare",
+    "operation": "Operation",
+    "resetAll": "Reset All",
+    "confirmReset": "Reset all settings to default?",
+    "language": {
+      "title": "Language",
+      "japanese": "日本語",
+      "english": "English"
+    },
+    "theme": {
+      "title": "Theme",
+      "light": "Light",
+      "dark": "Dark",
+      "system": "Follow System"
+    },
+    "imageDisplay": {
+      "title": "Image Display Settings",
+      "defaultMode": "Default Display Mode",
+      "defaultLayout": "Default Layout",
+      "defaultViewMode": "Default View Mode"
+    },
+    "compare": {
+      "title": "Compare Settings",
+      "boundary": "Boundary Line (Swipe Mode)",
+      "color": "Color",
+      "width": "Width",
+      "style": "Style",
+      "solid": "Solid",
+      "dashed": "Dashed",
+      "dotted": "Dotted"
+    },
+    "operation": {
+      "title": "Operation Settings",
+      "keyboardShortcuts": "Keyboard Shortcuts",
+      "customizeNotAvailable": "※ Customization not available in current version",
+      "shortcuts": {
+        "zoomin": "Zoom In",
+        "zoomout": "Zoom Out",
+        "resetview": "Reset View",
+        "openfiles": "Open Files",
+        "openfolder1": "Open Folder 1",
+        "openfolder2": "Open Folder 2",
+        "togglemode": "Toggle Mode",
+        "togglelayout": "Toggle Layout",
+        "toggleview": "Toggle View"
+      }
+    },
+    "appInfo": {
+      "version": "Version",
+      "developer": "Developer",
+      "appName": "Visual Compare Studio",
+      "versionNumber": "v0.1.0",
+      "copyright": "© 2024 Visual Compare Studio"
+    }
+  },
+  "fileTypes": {
+    "image": "Image",
+    "folder": "Folder",
+    "file": "File"
+  },
+  "errors": {
+    "fileNotFound": "File not found",
+    "folderNotFound": "Folder not found",
+    "invalidFileType": "Unsupported file type",
+    "loadingFailed": "Failed to load",
+    "savingFailed": "Failed to save",
+    "accessDenied": "Access denied",
+    "networkError": "Network error occurred",
+    "unknownError": "Unknown error occurred"
+  },
+  "themes": {
+    "light": "Light Theme",
+    "dark": "Dark Theme",
+    "system": "System Theme"
+  }
+}

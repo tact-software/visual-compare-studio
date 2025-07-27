@@ -8,7 +8,11 @@ import { ThemeProvider } from './components/common/theme-provider';
 import { useTheme } from './hooks/use-theme';
 import { useMenuEvents } from './hooks/use-menu-events';
 import { useAppInit } from './hooks/use-app-init';
+import { useI18n } from './hooks/use-i18n';
+import { useAppStore } from './stores/app-store';
 import { SettingsDialog } from './components/dialogs/settings-dialog';
+import { AboutDialog } from './components/dialogs/about-dialog';
+import './i18n';
 
 const lightTheme = createTheme({
   palette: {
@@ -36,6 +40,7 @@ const darkTheme = createTheme({
 
 const AppContent: React.FC = () => {
   const { theme } = useTheme();
+  const { isAboutDialogOpen, closeAboutDialog } = useAppStore();
   const muiTheme = theme === 'dark' ? darkTheme : lightTheme;
 
   // Initialize menu event listeners
@@ -43,6 +48,9 @@ const AppContent: React.FC = () => {
 
   // Initialize app with default settings
   useAppInit();
+
+  // Initialize i18n
+  useI18n();
 
   return (
     <MUIThemeProvider theme={muiTheme}>
@@ -60,6 +68,7 @@ const AppContent: React.FC = () => {
           <ImageViewer />
         </MainLayout>
         <SettingsDialog />
+        <AboutDialog open={isAboutDialogOpen} onClose={closeAboutDialog} />
       </Box>
     </MUIThemeProvider>
   );

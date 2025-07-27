@@ -1,4 +1,5 @@
 import React, { useState, useCallback, useRef } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Box, Slider, Typography } from '@mui/material';
 import { SingleImageViewer } from './single-image-viewer';
 import { useFileStore } from '../../stores/file-store';
@@ -10,6 +11,7 @@ interface TopBottomSwipeLayoutProps {
 }
 
 export const TopBottomSwipeLayout: React.FC<TopBottomSwipeLayoutProps> = ({ sx }) => {
+  const { t } = useTranslation();
   const { files, selectedFiles } = useFileStore();
   const [swipePosition, setSwipePosition] = useState(50); // パーセンテージ
   const containerRef = useRef<HTMLDivElement>(null);
@@ -56,10 +58,10 @@ export const TopBottomSwipeLayout: React.FC<TopBottomSwipeLayoutProps> = ({ sx }
         }}
       >
         <Typography variant="h6" color="text.secondary">
-          Select two images to compare
+          {t('viewer.selectTwoImages')}
         </Typography>
         <Typography variant="body2" color="text.secondary">
-          Use the sidebar to select exactly two images for vertical swipe comparison
+          {t('viewer.verticalSwipeComparison')}
         </Typography>
       </Box>
     );
@@ -167,7 +169,7 @@ export const TopBottomSwipeLayout: React.FC<TopBottomSwipeLayoutProps> = ({ sx }
             lineHeight: 1.2,
           }}
         >
-          Option + Scroll
+          {t('viewer.optionScroll')}
         </Typography>
         <Slider
           value={100 - swipePosition}

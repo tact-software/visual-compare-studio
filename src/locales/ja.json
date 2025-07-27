@@ -1,0 +1,190 @@
+{
+  "common": {
+    "ok": "OK",
+    "cancel": "キャンセル",
+    "apply": "適用",
+    "reset": "リセット",
+    "close": "閉じる",
+    "settings": "設定",
+    "loading": "読み込み中...",
+    "error": "エラー",
+    "warning": "警告",
+    "information": "情報",
+    "save": "保存",
+    "delete": "削除",
+    "edit": "編集",
+    "add": "追加",
+    "remove": "削除",
+    "clear": "クリア",
+    "refresh": "更新",
+    "back": "戻る",
+    "next": "次へ",
+    "previous": "前へ",
+    "search": "検索",
+    "filter": "フィルター",
+    "sort": "並び替え",
+    "export": "エクスポート",
+    "import": "インポート",
+    "total": "合計"
+  },
+  "layout": {
+    "sideBySide": "横並び",
+    "topBottom": "縦並び",
+    "split": "スプリット",
+    "swipe": "スワイプ",
+    "grid": "グリッド"
+  },
+  "mode": {
+    "file": "ファイルモード",
+    "folder": "フォルダモード"
+  },
+  "toolbar": {
+    "mode": "モード",
+    "layout": "レイアウト",
+    "view": "ビュー",
+    "zoomIn": "ズームイン",
+    "zoomOut": "ズームアウト",
+    "resetView": "ビューをリセット",
+    "boundarySettings": "境界線設定",
+    "openFiles": "ファイルを開く",
+    "openFolder": "フォルダを開く"
+  },
+  "sidebar": {
+    "files": "ファイル",
+    "folders": "フォルダ",
+    "noFiles": "ファイルがありません",
+    "noFolders": "フォルダがありません",
+    "selectFiles": "ファイルを選択してください",
+    "selectFolders": "フォルダを選択してください",
+    "dragDropFiles": "ファイルをドラッグ&ドロップしてください",
+    "dragDropFolders": "フォルダをドラッグ&ドロップしてください",
+    "folderSelection": "フォルダ選択",
+    "folder1": "フォルダ1",
+    "folder2": "フォルダ2",
+    "notSelected": "未選択",
+    "analyze": "解析",
+    "navigation": "画像移動",
+    "matchedFiles": "同名ファイル一覧",
+    "loadingData": "読み込み待ち"
+  },
+  "viewer": {
+    "selectTwoImages": "比較する2つの画像を選択してください",
+    "useSidebar": "サイドバーを使用して比較する画像を正確に2つ選択してください",
+    "swipeComparison": "スワイプ比較用に正確に2つの画像を選択してください",
+    "verticalSwipeComparison": "縦スワイプ比較用に正確に2つの画像を選択してください",
+    "swipePosition": "スワイプ位置",
+    "optionScroll": "Option + スクロールで調整"
+  },
+  "navigation": {
+    "noImageSelected": "画像が選択されていません",
+    "firstImage": "最初の画像",
+    "previousImage": "前の画像",
+    "nextImage": "次の画像",
+    "lastImage": "最後の画像",
+    "dimensionUnknown": "寸法不明",
+    "showing": "表示中"
+  },
+  "dropZone": {
+    "dropImagesHere": "画像をここにドロップ",
+    "supportedFormats": "対応形式: JPG, PNG, WebP, AVIF, BMP, GIF"
+  },
+  "about": {
+    "description": "画像の比較・分析用の強力なデスクトップアプリケーション",
+    "technologyStack": "技術スタック",
+    "technologyDescription": "React, TypeScript, Material-UI, Tauriで構築",
+    "features": "機能",
+    "featuresList": {
+      "sideBySide": "横並び・スワイプ比較モード",
+      "folderBased": "フォルダベースの一括比較",
+      "synchronized": "同期ズーム・パン機能",
+      "customizable": "カスタマイズ可能なインターフェーステーマ",
+      "multiLanguage": "多言語対応"
+    }
+  },
+  "statusBar": {
+    "ready": "準備完了",
+    "processing": "処理中...",
+    "filesSelected": "{{count}}個のファイル",
+    "foldersSelected": "{{count}}個のフォルダ"
+  },
+  "settings": {
+    "title": "設定",
+    "general": "一般",
+    "display": "表示",
+    "imageDisplay": "画像表示",
+    "compare": "比較",
+    "operation": "操作",
+    "resetAll": "すべてリセット",
+    "confirmReset": "すべての設定をデフォルトに戻しますか？",
+    "language": {
+      "title": "言語",
+      "japanese": "日本語",
+      "english": "English"
+    },
+    "theme": {
+      "title": "テーマ",
+      "light": "ライト",
+      "dark": "ダーク",
+      "system": "システム設定に従う"
+    },
+    "imageDisplay": {
+      "title": "画像表示設定",
+      "defaultMode": "デフォルトの表示モード",
+      "defaultLayout": "デフォルトのレイアウト",
+      "defaultViewMode": "デフォルトのビューモード"
+    },
+    "compare": {
+      "title": "比較設定",
+      "boundary": "境界線（スワイプモード）",
+      "color": "色",
+      "width": "太さ",
+      "style": "スタイル",
+      "solid": "実線",
+      "dashed": "破線",
+      "dotted": "点線"
+    },
+    "operation": {
+      "title": "操作設定",
+      "keyboardShortcuts": "キーボードショートカット",
+      "customizeNotAvailable": "※ 現在のバージョンではカスタマイズできません",
+      "shortcuts": {
+        "zoomin": "ズームイン",
+        "zoomout": "ズームアウト",
+        "resetview": "ビューをリセット",
+        "openfiles": "ファイルを開く",
+        "openfolder1": "フォルダ1を開く",
+        "openfolder2": "フォルダ2を開く",
+        "togglemode": "モード切替",
+        "togglelayout": "レイアウト切替",
+        "toggleview": "ビュー切替"
+      }
+    },
+    "appInfo": {
+      "version": "バージョン",
+      "developer": "開発元",
+      "appName": "Visual Compare Studio",
+      "versionNumber": "v0.1.0",
+      "copyright": "© 2024 Visual Compare Studio"
+    }
+  },
+  "fileTypes": {
+    "image": "画像",
+    "folder": "フォルダ",
+    "file": "ファイル"
+  },
+  "errors": {
+    "fileNotFound": "ファイルが見つかりません",
+    "folderNotFound": "フォルダが見つかりません",
+    "invalidFileType": "サポートされていないファイル形式です",
+    "loadingFailed": "読み込みに失敗しました",
+    "savingFailed": "保存に失敗しました",
+    "accessDenied": "アクセスが拒否されました",
+    "networkError": "ネットワークエラーが発生しました",
+    "unknownError": "不明なエラーが発生しました"
+  },
+  "themes": {
+    "light": "ライトテーマ",
+    "dark": "ダークテーマ",
+    "system": "システムテーマ"
+  }
+}

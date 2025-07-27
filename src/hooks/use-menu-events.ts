@@ -7,7 +7,7 @@ import { useAppStore } from '../stores/app-store';
 export function useMenuEvents() {
   const { openFiles, openFolder } = useFileDialog();
   const { resetAllViewers, syncZoomToAll, leftViewer } = useViewerStore();
-  const { setFolderMode } = useAppStore();
+  const { setFolderMode, openAboutDialog } = useAppStore();
 
   useEffect(() => {
     const unsubscribe = listen<string>('menu-action', (event) => {
@@ -38,8 +38,7 @@ export function useMenuEvents() {
             syncZoomToAll(Math.max(0.1, leftViewer.zoom / 1.2));
             break;
           case 'about':
-            // TODO: Show about dialog
-            console.log('About Visual Compare Studio');
+            openAboutDialog();
             break;
         }
       })();
@@ -48,5 +47,13 @@ export function useMenuEvents() {
     return () => {
       void unsubscribe.then((fn) => fn());
     };
-  }, [openFiles, openFolder, resetAllViewers, syncZoomToAll, leftViewer.zoom, setFolderMode]);
+  }, [
+    openFiles,
+    openFolder,
+    resetAllViewers,
+    syncZoomToAll,
+    leftViewer.zoom,
+    setFolderMode,
+    openAboutDialog,
+  ]);
 }
