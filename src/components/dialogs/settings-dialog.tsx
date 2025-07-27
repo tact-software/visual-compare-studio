@@ -138,13 +138,13 @@ export const SettingsDialog: React.FC = () => {
       case 'display':
         return t('settings.display');
       case 'imageDisplay':
-        return t('settings.imageDisplay');
+        return t('settings.tabs.imageDisplay');
       case 'compare':
-        return t('settings.compare');
+        return t('settings.tabs.compare');
       case 'operation':
-        return t('settings.operation');
+        return t('settings.tabs.operation');
       case 'info':
-        return t('settings.appInfo.version');
+        return t('settings.appInfo.title');
       default:
         return section;
     }

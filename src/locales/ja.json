@@ -73,7 +73,12 @@
     "swipeComparison": "スワイプ比較用に正確に2つの画像を選択してください",
     "verticalSwipeComparison": "縦スワイプ比較用に正確に2つの画像を選択してください",
     "swipePosition": "スワイプ位置",
-    "optionScroll": "Option + スクロールで調整"
+    "optionScroll": "Option + スクロールで調整",
+    "noImageSelected": "画像が選択されていません",
+    "selectFromSidebar": "サイドバーから画像を選択してください",
+    "loadingImage": "画像を読み込み中...",
+    "failedToLoadImage": "画像の読み込みに失敗しました",
+    "checkConsole": "詳細はコンソールを確認してください"
   },
   "navigation": {
     "noImageSelected": "画像が選択されていません",
@@ -111,11 +116,13 @@
     "title": "設定",
     "general": "一般",
     "display": "表示",
-    "imageDisplay": "画像表示",
-    "compare": "比較",
-    "operation": "操作",
     "resetAll": "すべてリセット",
     "confirmReset": "すべての設定をデフォルトに戻しますか？",
+    "tabs": {
+      "imageDisplay": "画像表示",
+      "compare": "比較",
+      "operation": "操作"
+    },
     "language": {
       "title": "言語",
       "japanese": "日本語",
@@ -160,6 +167,7 @@
       }
     },
     "appInfo": {
+      "title": "アプリ情報",
       "version": "バージョン",
       "developer": "開発元",
       "appName": "Visual Compare Studio",

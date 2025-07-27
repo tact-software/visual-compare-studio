@@ -12,7 +12,7 @@ import { useI18n } from './hooks/use-i18n';
 import { useAppStore } from './stores/app-store';
 import { SettingsDialog } from './components/dialogs/settings-dialog';
 import { AboutDialog } from './components/dialogs/about-dialog';
-import './i18n';
+import './i18n/index';
 
 const lightTheme = createTheme({
   palette: {

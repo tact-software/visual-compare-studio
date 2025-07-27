@@ -73,7 +73,12 @@
     "swipeComparison": "Use the sidebar to select exactly two images for swipe comparison",
     "verticalSwipeComparison": "Use the sidebar to select exactly two images for vertical swipe comparison",
     "swipePosition": "Swipe Position",
-    "optionScroll": "Option + Scroll to adjust"
+    "optionScroll": "Option + Scroll to adjust",
+    "noImageSelected": "No image selected",
+    "selectFromSidebar": "Select an image from the sidebar",
+    "loadingImage": "Loading image...",
+    "failedToLoadImage": "Failed to load image",
+    "checkConsole": "Check console for details"
   },
   "navigation": {
     "noImageSelected": "No image selected",
@@ -111,11 +116,13 @@
     "title": "Settings",
     "general": "General",
     "display": "Display",
-    "imageDisplay": "Image Display",
-    "compare": "Compare",
-    "operation": "Operation",
     "resetAll": "Reset All",
     "confirmReset": "Reset all settings to default?",
+    "tabs": {
+      "imageDisplay": "Image Display",
+      "compare": "Compare",
+      "operation": "Operation"
+    },
     "language": {
       "title": "Language",
       "japanese": "日本語",
@@ -160,6 +167,7 @@
       }
     },
     "appInfo": {
+      "title": "App Info",
       "version": "Version",
       "developer": "Developer",
       "appName": "Visual Compare Studio",

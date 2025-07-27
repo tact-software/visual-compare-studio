@@ -1,4 +1,5 @@
 import React, { useRef, useEffect, useState, useCallback } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Box, Typography, CircularProgress } from '@mui/material';
 import { useViewerStore } from '../../stores/viewer-store';
 import { useViewerOperations } from '../../hooks/use-viewer-operations';
@@ -15,6 +16,7 @@ export const SingleImageViewer: React.FC<SingleImageViewerProps> = ({
   viewerType,
   sx,
 }) => {
+  const { t } = useTranslation();
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const [isLoading, setIsLoading] = useState(false);
@@ -190,7 +192,7 @@ export const SingleImageViewer: React.FC<SingleImageViewerProps> = ({
         >
           <CircularProgress />
           <Typography variant="body2" color="text.secondary">
-            Loading image...
+            {t('viewer.loadingImage')}
           </Typography>
         </Box>
       )}
@@ -206,10 +208,10 @@ export const SingleImageViewer: React.FC<SingleImageViewerProps> = ({
           }}
         >
           <Typography variant="h6" color="text.secondary">
-            No image selected
+            {t('viewer.noImageSelected')}
           </Typography>
           <Typography variant="body2" color="text.secondary">
-            Select an image from the sidebar
+            {t('viewer.selectFromSidebar')}
           </Typography>
         </Box>
       )}
@@ -225,10 +227,10 @@ export const SingleImageViewer: React.FC<SingleImageViewerProps> = ({
           }}
         >
           <Typography variant="h6" color="error.main">
-            Failed to load image
+            {t('viewer.failedToLoadImage')}
           </Typography>
           <Typography variant="body2" color="text.secondary">
-            {imageFile.name} - Check console for details
+            {imageFile.name} - {t('viewer.checkConsole')}
           </Typography>
         </Box>
       )}
