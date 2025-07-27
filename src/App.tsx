@@ -7,7 +7,8 @@ import { ImageViewer } from './components/viewer/image-viewer';
 import { ThemeProvider } from './components/common/theme-provider';
 import { useTheme } from './hooks/use-theme';
 import { useMenuEvents } from './hooks/use-menu-events';
-import { BoundarySettingsDialog } from './components/dialogs/boundary-settings-dialog';
+import { useAppInit } from './hooks/use-app-init';
+import { SettingsDialog } from './components/dialogs/settings-dialog';
 
 const lightTheme = createTheme({
   palette: {
@@ -40,6 +41,9 @@ const AppContent: React.FC = () => {
   // Initialize menu event listeners
   useMenuEvents();
 
+  // Initialize app with default settings
+  useAppInit();
+
   return (
     <MUIThemeProvider theme={muiTheme}>
       <CssBaseline />
@@ -55,7 +59,7 @@ const AppContent: React.FC = () => {
         <MainLayout>
           <ImageViewer />
         </MainLayout>
-        <BoundarySettingsDialog />
+        <SettingsDialog />
       </Box>
     </MUIThemeProvider>
   );

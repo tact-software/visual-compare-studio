@@ -3,7 +3,7 @@ import { Box, Slider, Typography } from '@mui/material';
 import { SwipeImageViewer } from './swipe-image-viewer';
 import { useFileStore } from '../../stores/file-store';
 import { useViewerOperations } from '../../hooks/use-viewer-operations';
-import { useBoundaryStore } from '../../stores/boundary-store';
+import { useSettingsStore } from '../../stores/settings-store';
 
 interface SwipeLayoutProps {
   sx?: Record<string, unknown>;
@@ -13,7 +13,7 @@ export const SwipeLayout: React.FC<SwipeLayoutProps> = ({ sx }) => {
   const { files, selectedFiles } = useFileStore();
   const [swipePosition, setSwipePosition] = useState(50); // パーセンテージ
   const containerRef = useRef<HTMLDivElement>(null);
-  const { boundarySettings } = useBoundaryStore();
+  const { compare } = useSettingsStore();
 
   // 共通操作ハンドラーを使用
   const { createWheelHandler, createMouseDownHandler } = useViewerOperations();
@@ -128,9 +128,14 @@ export const SwipeLayout: React.FC<SwipeLayoutProps> = ({ sx }) => {
             position: 'absolute',
             left: `${swipePosition}%`,
             top: 0,
-            width: `${boundarySettings.width}px`,
+            width: `${compare.boundaryWidth}px`,
             height: '100%',
-            backgroundColor: boundarySettings.color,
+            backgroundColor:
+              compare.boundaryStyle === 'solid' ? compare.boundaryColor : 'transparent',
+            borderLeft:
+              compare.boundaryStyle !== 'solid'
+                ? `${compare.boundaryWidth}px ${compare.boundaryStyle} ${compare.boundaryColor}`
+                : 'none',
             transform: 'translateX(-50%)',
             pointerEvents: 'none',
             opacity: 0.8,

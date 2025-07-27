@@ -21,14 +21,14 @@ import {
   Computer,
   Folder,
   InsertDriveFile,
-  BorderStyle,
+  Settings,
 } from '@mui/icons-material';
 import { useAppStore } from '../../stores/app-store';
 import { useTheme } from '../../hooks/use-theme';
 import { useViewerStore } from '../../stores/viewer-store';
 import { useFileStore } from '../../stores/file-store';
 import { useFolderStore } from '../../stores/folder-store';
-import { useBoundaryStore } from '../../stores/boundary-store';
+import { useSettingsStore } from '../../stores/settings-store';
 
 export const Toolbar: React.FC = () => {
   const { currentLayout, setLayout, isFolderMode, setFolderMode, setLoading } = useAppStore();
@@ -36,7 +36,7 @@ export const Toolbar: React.FC = () => {
   const { leftViewer, resetAllViewers, syncZoomToAll } = useViewerStore();
   const { clearFiles } = useFileStore();
   const { clearFolders } = useFolderStore();
-  const { openSettingsDialog } = useBoundaryStore();
+  const { openSettingsDialog } = useSettingsStore();
 
   const layoutOptions = [
     { type: 'side-by-side', label: 'Side by Side' },
@@ -183,14 +183,11 @@ export const Toolbar: React.FC = () => {
 
           <Divider orientation="vertical" flexItem sx={{ mx: 1 }} />
 
-          {/* スワイプモードの時のみ境界線設定ボタンを表示 */}
-          {currentLayout.viewMode === 'swipe' && (
-            <Tooltip title="境界線設定">
-              <IconButton size="small" onClick={openSettingsDialog} color="primary">
-                <BorderStyle />
-              </IconButton>
-            </Tooltip>
-          )}
+          <Tooltip title="設定">
+            <IconButton size="small" onClick={openSettingsDialog}>
+              <Settings />
+            </IconButton>
+          </Tooltip>
 
           <IconButton size="small" onClick={handleThemeToggle}>
             {getThemeIcon()}
