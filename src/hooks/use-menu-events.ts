@@ -3,11 +3,13 @@ import { listen } from '@tauri-apps/api/event';
 import { useFileDialog } from './use-file-dialog';
 import { useViewerStore } from '../stores/viewer-store';
 import { useAppStore } from '../stores/app-store';
+import { useSettingsStore } from '../stores/settings-store';
 
 export function useMenuEvents() {
   const { openFiles, openFolder } = useFileDialog();
   const { resetAllViewers, syncZoomToAll, leftViewer } = useViewerStore();
-  const { setFolderMode, openAboutDialog } = useAppStore();
+  const { setFolderMode, openAboutDialog, toggleLayout, toggleViewMode } = useAppStore();
+  const { openSettingsDialog } = useSettingsStore();
 
   useEffect(() => {
     const unsubscribe = listen<string>('menu-action', (event) => {
@@ -40,6 +42,15 @@ export function useMenuEvents() {
           case 'about':
             openAboutDialog();
             break;
+          case 'settings':
+            openSettingsDialog();
+            break;
+          case 'toggle-layout':
+            toggleLayout();
+            break;
+          case 'toggle-view':
+            toggleViewMode();
+            break;
         }
       })();
     });
@@ -55,5 +66,8 @@ export function useMenuEvents() {
     leftViewer.zoom,
     setFolderMode,
     openAboutDialog,
+    openSettingsDialog,
+    toggleLayout,
+    toggleViewMode,
   ]);
 }

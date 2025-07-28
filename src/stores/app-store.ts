@@ -17,6 +17,8 @@ interface AppStore {
   setFolderMode: (isFolderMode: boolean) => void;
   openAboutDialog: () => void;
   closeAboutDialog: () => void;
+  toggleLayout: () => void;
+  toggleViewMode: () => void;
 }
 
 export const useAppStore = create<AppStore>()(
@@ -51,6 +53,29 @@ export const useAppStore = create<AppStore>()(
         setFolderMode: (isFolderMode) => set({ isFolderMode }),
         openAboutDialog: () => set({ isAboutDialogOpen: true }),
         closeAboutDialog: () => set({ isAboutDialogOpen: false }),
+        toggleLayout: () =>
+          set((state) => {
+            const layouts: Array<LayoutMode['type']> = ['side-by-side', 'top-bottom'];
+            const currentIndex = layouts.indexOf(state.currentLayout.type);
+            const nextIndex = (currentIndex + 1) % layouts.length;
+            return {
+              currentLayout: {
+                type: layouts[nextIndex],
+                viewMode: state.currentLayout.viewMode,
+              },
+            };
+          }),
+        toggleViewMode: () =>
+          set((state) => {
+            const currentViewMode = state.currentLayout.viewMode || 'split';
+            const nextViewMode = currentViewMode === 'split' ? 'swipe' : 'split';
+            return {
+              currentLayout: {
+                ...state.currentLayout,
+                viewMode: nextViewMode,
+              },
+            };
+          }),
       }),
       {
         name: 'vcs-app-store',

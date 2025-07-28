@@ -194,5 +194,25 @@
     "light": "ライトテーマ",
     "dark": "ダークテーマ",
     "system": "システムテーマ"
+  },
+  "menu": {
+    "file": "ファイル",
+    "openFiles": "ファイルを開く...",
+    "openFolder1": "フォルダ1を開く...",
+    "openFolder2": "フォルダ2を開く...",
+    "settings": "設定...",
+    "quit": "終了",
+    "view": "表示",
+    "zoomIn": "ズームイン",
+    "zoomOut": "ズームアウト",
+    "resetZoom": "ズームをリセット",
+    "toggleLayout": "レイアウト切り替え",
+    "toggleViewMode": "ビューモード切り替え",
+    "window": "ウィンドウ",
+    "minimize": "最小化",
+    "maximize": "最大化",
+    "closeWindow": "ウィンドウを閉じる",
+    "help": "ヘルプ",
+    "about": "Visual Compare Studioについて"
   }
 }

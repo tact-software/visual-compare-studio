@@ -1,6 +1,7 @@
 import { create } from 'zustand';
 import { devtools, persist } from 'zustand/middleware';
 import i18n from '../i18n';
+import { emit } from '@tauri-apps/api/event';
 
 export type Language = 'ja' | 'en';
 export type ImageFitMode = 'fit' | 'actual' | 'width' | 'height';
@@ -97,6 +98,8 @@ export const useSettingsStore = create<SettingsStore>()(
             // 言語変更時にi18nも更新
             if (settings.language && settings.language !== state.general.language) {
               void i18n.changeLanguage(settings.language);
+              // Tauriに言語変更を通知
+              void emit('language-changed', settings.language);
             }
             return {
               general: newGeneral,

@@ -194,5 +194,25 @@
     "light": "Light Theme",
     "dark": "Dark Theme",
     "system": "System Theme"
+  },
+  "menu": {
+    "file": "File",
+    "openFiles": "Open Files...",
+    "openFolder1": "Open Folder 1...",
+    "openFolder2": "Open Folder 2...",
+    "settings": "Settings...",
+    "quit": "Quit",
+    "view": "View",
+    "zoomIn": "Zoom In",
+    "zoomOut": "Zoom Out",
+    "resetZoom": "Reset Zoom",
+    "toggleLayout": "Toggle Layout",
+    "toggleViewMode": "Toggle View Mode",
+    "window": "Window",
+    "minimize": "Minimize",
+    "maximize": "Maximize",
+    "closeWindow": "Close Window",
+    "help": "Help",
+    "about": "About Visual Compare Studio"
   }
 }

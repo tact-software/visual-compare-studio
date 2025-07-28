@@ -182,6 +182,7 @@ fn create_menu(app: &tauri::AppHandle) -> Result<Menu<tauri::Wry>, tauri::Error>
     let open_files = MenuItem::with_id(app, "open-files", "Open Files...", true, Some("CmdOrCtrl+O"))?;
     let open_folder1 = MenuItem::with_id(app, "open-folder1", "Open Folder 1...", true, Some("CmdOrCtrl+Shift+1"))?;
     let open_folder2 = MenuItem::with_id(app, "open-folder2", "Open Folder 2...", true, Some("CmdOrCtrl+Shift+2"))?;
+    let settings = MenuItem::with_id(app, "settings", "Settings...", true, Some("CmdOrCtrl+Comma"))?;
     let quit = MenuItem::with_id(app, "quit", "Quit", true, Some("CmdOrCtrl+Q"))?;
     
     file_menu.append(&open_files)?;
@@ -189,22 +190,9 @@ fn create_menu(app: &tauri::AppHandle) -> Result<Menu<tauri::Wry>, tauri::Error>
     file_menu.append(&open_folder1)?;
     file_menu.append(&open_folder2)?;
     file_menu.append(&PredefinedMenuItem::separator(app)?)?;
+    file_menu.append(&settings)?;
+    file_menu.append(&PredefinedMenuItem::separator(app)?)?;
     file_menu.append(&quit)?;
-    
-    // Edit menu
-    let edit_menu = Submenu::new(
-        app,
-        "Edit",
-        true
-    )?;
-    
-    edit_menu.append(&PredefinedMenuItem::undo(app, None)?)?;
-    edit_menu.append(&PredefinedMenuItem::redo(app, None)?)?;
-    edit_menu.append(&PredefinedMenuItem::separator(app)?)?;
-    edit_menu.append(&PredefinedMenuItem::cut(app, None)?)?;
-    edit_menu.append(&PredefinedMenuItem::copy(app, None)?)?;
-    edit_menu.append(&PredefinedMenuItem::paste(app, None)?)?;
-    edit_menu.append(&PredefinedMenuItem::select_all(app, None)?)?;
     
     // View menu
     let view_menu = Submenu::new(
@@ -213,13 +201,18 @@ fn create_menu(app: &tauri::AppHandle) -> Result<Menu<tauri::Wry>, tauri::Error>
         true
     )?;
     
-    let reset_zoom = MenuItem::with_id(app, "reset-zoom", "Reset Zoom", true, Some("CmdOrCtrl+0"))?;
     let zoom_in = MenuItem::with_id(app, "zoom-in", "Zoom In", true, Some("CmdOrCtrl+Plus"))?;
     let zoom_out = MenuItem::with_id(app, "zoom-out", "Zoom Out", true, Some("CmdOrCtrl+Minus"))?;
+    let reset_zoom = MenuItem::with_id(app, "reset-zoom", "Reset Zoom", true, Some("CmdOrCtrl+0"))?;
+    let toggle_layout = MenuItem::with_id(app, "toggle-layout", "Toggle Layout", true, Some("CmdOrCtrl+L"))?;
+    let toggle_view = MenuItem::with_id(app, "toggle-view", "Toggle View Mode", true, Some("CmdOrCtrl+T"))?;
     
-    view_menu.append(&reset_zoom)?;
     view_menu.append(&zoom_in)?;
     view_menu.append(&zoom_out)?;
+    view_menu.append(&reset_zoom)?;
+    view_menu.append(&PredefinedMenuItem::separator(app)?)?;
+    view_menu.append(&toggle_layout)?;
+    view_menu.append(&toggle_view)?;
     
     // Window menu
     let window_menu = Submenu::new(
@@ -244,7 +237,6 @@ fn create_menu(app: &tauri::AppHandle) -> Result<Menu<tauri::Wry>, tauri::Error>
     
     // Append all menus to the menu bar
     menu.append(&file_menu)?;
-    menu.append(&edit_menu)?;
     menu.append(&view_menu)?;
     menu.append(&window_menu)?;
     menu.append(&help_menu)?;
@@ -286,6 +278,9 @@ pub fn run() {
                     "open-folder2" => {
                         let _ = app.emit("menu-action", "open-folder2");
                     }
+                    "settings" => {
+                        let _ = app.emit("menu-action", "settings");
+                    }
                     "reset-zoom" => {
                         let _ = app.emit("menu-action", "reset-zoom");
                     }
@@ -294,6 +289,12 @@ pub fn run() {
                     }
                     "zoom-out" => {
                         let _ = app.emit("menu-action", "zoom-out");
+                    }
+                    "toggle-layout" => {
+                        let _ = app.emit("menu-action", "toggle-layout");
+                    }
+                    "toggle-view" => {
+                        let _ = app.emit("menu-action", "toggle-view");
                     }
                     "about" => {
                         let _ = app.emit("menu-action", "about");
