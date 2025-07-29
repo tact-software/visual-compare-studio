@@ -2,9 +2,6 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   Box,
-  Card,
-  CardContent,
-  CardHeader,
   Typography,
   Button,
   List,
@@ -41,109 +38,118 @@ export const FileModeSidebar: React.FC = () => {
         width: 256,
         borderRight: 1,
         borderColor: 'divider',
-        p: 2,
         height: '100%',
-        overflow: 'hidden',
         display: 'flex',
         flexDirection: 'column',
       }}
     >
-      <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, flex: 1, overflow: 'auto' }}>
-        <Card>
-          <CardHeader
-            title={<Typography variant="h6">{t('sidebar.files')}</Typography>}
-            sx={{ pb: 1 }}
-          />
-          <CardContent sx={{ pt: 0 }}>
-            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
-              <Button
-                variant="outlined"
-                startIcon={<InsertDriveFile />}
-                fullWidth
-                size="small"
-                onClick={() => void openFiles()}
-              >
-                {t('toolbar.openFiles')}
-              </Button>
-            </Box>
-          </CardContent>
-        </Card>
+      {/* ファイルを開くボタン - 固定高さ */}
+      <Box sx={{ p: 2, borderBottom: 1, borderColor: 'divider' }}>
+        <Button
+          variant="outlined"
+          startIcon={<InsertDriveFile />}
+          fullWidth
+          size="small"
+          onClick={() => void openFiles()}
+        >
+          {t('toolbar.openFiles')}
+        </Button>
+      </Box>
 
-        <Card>
-          <CardHeader
-            title={<Typography variant="h6">{t('sidebar.files')}</Typography>}
-            sx={{ pb: 1 }}
-            action={
-              files.length > 0 && (
-                <IconButton size="small" onClick={clearFiles} title={t('common.clear')}>
-                  <Delete fontSize="small" />
-                </IconButton>
-              )
-            }
-          />
-          <CardContent sx={{ pt: 0 }}>
-            {files.length === 0 ? (
-              <Typography variant="body2" color="text.secondary">
-                {t('sidebar.noFiles')}
-              </Typography>
-            ) : (
-              <List dense>
-                {files.map((file) => (
-                  <ListItem
-                    key={file.id}
-                    sx={{
-                      px: 1,
-                      bgcolor: selectedFiles.includes(file.id) ? 'action.selected' : 'transparent',
-                      cursor: 'pointer',
-                      '&:hover': {
-                        bgcolor: 'action.hover',
-                      },
-                    }}
-                    onClick={() => handleFileClick(file.id)}
-                    secondaryAction={
-                      <IconButton
-                        edge="end"
-                        size="small"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          removeFile(file.id);
-                        }}
-                        title={t('common.remove')}
-                      >
-                        <Close fontSize="small" />
-                      </IconButton>
+      {/* ファイルリスト - 残りの高さを使用してスクロール可能 */}
+      <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
+        <Box
+          sx={{
+            px: 2,
+            py: 1.5,
+            borderBottom: 1,
+            borderColor: 'divider',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            minHeight: 48,
+          }}
+        >
+          <Typography variant="subtitle2">{t('sidebar.files')}</Typography>
+          {files.length > 0 && (
+            <IconButton size="small" onClick={clearFiles} title={t('common.clear')}>
+              <Delete fontSize="small" />
+            </IconButton>
+          )}
+        </Box>
+        <Box sx={{ flex: 1, overflow: 'auto', px: 2, py: 1 }}>
+          {files.length === 0 ? (
+            <Typography variant="body2" color="text.secondary">
+              {t('sidebar.noFiles')}
+            </Typography>
+          ) : (
+            <List dense sx={{ py: 0 }}>
+              {files.map((file) => (
+                <ListItem
+                  key={file.id}
+                  sx={{
+                    px: 1,
+                    bgcolor: selectedFiles.includes(file.id) ? 'action.selected' : 'transparent',
+                    cursor: 'pointer',
+                    borderRadius: 1,
+                    mb: 0.5,
+                    '&:hover': {
+                      bgcolor: 'action.hover',
+                    },
+                  }}
+                  onClick={() => handleFileClick(file.id)}
+                  secondaryAction={
+                    <IconButton
+                      edge="end"
+                      size="small"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        removeFile(file.id);
+                      }}
+                      title={t('common.remove')}
+                    >
+                      <Close fontSize="small" />
+                    </IconButton>
+                  }
+                >
+                  <ListItemText
+                    primary={
+                      <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                        {selectedFiles.includes(file.id) && (
+                          <Badge
+                            badgeContent={selectedFiles.indexOf(file.id) + 1}
+                            color="primary"
+                            sx={{
+                              '& .MuiBadge-badge': {
+                                fontSize: '0.7rem',
+                                height: 18,
+                                minWidth: 18,
+                              },
+                            }}
+                          />
+                        )}
+                        <Typography
+                          variant="body2"
+                          component="span"
+                          sx={{
+                            overflow: 'hidden',
+                            textOverflow: 'ellipsis',
+                            whiteSpace: 'nowrap',
+                            maxWidth: '160px',
+                          }}
+                        >
+                          {file.name}
+                        </Typography>
+                      </Box>
                     }
-                  >
-                    <ListItemText
-                      primary={
-                        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                          {selectedFiles.includes(file.id) && (
-                            <Badge
-                              badgeContent={selectedFiles.indexOf(file.id) + 1}
-                              color="primary"
-                              sx={{
-                                '& .MuiBadge-badge': {
-                                  fontSize: '0.7rem',
-                                  height: 18,
-                                  minWidth: 18,
-                                },
-                              }}
-                            />
-                          )}
-                          <Typography variant="body2" component="span">
-                            {file.name}
-                          </Typography>
-                        </Box>
-                      }
-                      secondary={`${(file.size / 1024 / 1024).toFixed(2)} MB`}
-                      secondaryTypographyProps={{ variant: 'caption' }}
-                    />
-                  </ListItem>
-                ))}
-              </List>
-            )}
-          </CardContent>
-        </Card>
+                    secondary={`${(file.size / 1024 / 1024).toFixed(2)} MB`}
+                    secondaryTypographyProps={{ variant: 'caption' }}
+                  />
+                </ListItem>
+              ))}
+            </List>
+          )}
+        </Box>
       </Box>
     </Box>
   );
